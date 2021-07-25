@@ -10,9 +10,7 @@ class GalleryController extends Controller
 {
     public function index(): View
     {
-        $albums = Album::latest()->paginate(50);
-
-        return view('gallery.albums')->with('albums', $albums);
+        return view('gallery.albums')->with('albums', Album::latest()->paginate(50));
     }
 
     public function showAlbumImages(Album $album)
