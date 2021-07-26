@@ -15,7 +15,11 @@
                         <p class="card-text">{{$album->created_at->diffForHumans()}}</p>
                         <p class="card-text">
                             @foreach($album->categories as $cat)
+                                @if($cat->id !== $category_id)
                                 <a href="{{route('gallery.categories.albums', $cat->id)}}">{{$cat->category_name}}</a>
+                                @else
+                                    {{$cat->category_name}}
+                                @endif
                             @endforeach
                         </p>
                     </div>

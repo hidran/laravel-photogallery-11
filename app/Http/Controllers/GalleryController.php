@@ -13,7 +13,7 @@ class GalleryController extends Controller
       //  \DB::enableQueryLog();
         $albums =  Album::with('categories')->latest()->paginate(50);
 
-        return view('gallery.albums')->with('albums',$albums);
+        return view('gallery.albums')->with(['albums' => $albums,   'category_id' => null]);
     }
 
     public function showAlbumImages(Album $album)
@@ -28,6 +28,10 @@ class GalleryController extends Controller
     public function showCategoryAlbums(Category $category)
     {
 
-        return view('gallery.albums')->with('albums', $category->albums()->with('categories')->latest()->paginate(50));
+        return view('gallery.albums')->with([
+            'category_id' => $category->id,
+            'albums'=> $category->albums()->with('categories')->latest()->paginate(50)]
+
+        );
     }
 }
