@@ -10,15 +10,19 @@
                              title="{{$album->album_name}}">
                     </a>
                     <div class="card-body">
-                        <h5 class="card-title"><a
-                                href="{{route('gallery.album.images', $album->id)}}">{{$album->album_name}}</a></h5>
+                        <h5 class="card-title"> <a href="{{route('gallery.album.images', $album->id)}}">{{$album->album_name}}</a></h5>
                         <p class="card-text">{{$album->album_description}}</p>
                         <p class="card-text">{{$album->created_at->diffForHumans()}}</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                        <p class="card-text">
+                            @foreach($album->categories as $cat)
+                                <a href="{{route('gallery.categories.albums', $cat->id)}}">{{$cat->category_name}}</a>
+                            @endforeach
+                        </p>
                     </div>
                 </div>
             </div>
 
-        @endforeach
+    @endforeach
+
     </div>
 @endsection
