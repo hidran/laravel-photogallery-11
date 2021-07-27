@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
@@ -30,9 +31,11 @@ class CategorySeeder extends Seeder
             'technics',
             'transport'
         ];
+        $user_id = User::inRandomOrder()->pluck('id')->first();
         foreach ($cats as $cat) {
             Category::create([
-                'category_name' => $cat
+                'category_name' => $cat,
+                'user_id' => $user_id
             ]);
         }
     }
