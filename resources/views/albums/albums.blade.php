@@ -12,6 +12,7 @@
         <tr class="align-middle">
             <th>Album name</th>
             <th>Thumb</th>
+            <th>Categories</th>
             <th>Author</th>
             <th>Date</th>
             <th>&nbsp;</th>
@@ -26,6 +27,17 @@
                                  src="{{$album->path}}"
                                  title="{{$album->album_name}}"
                              alt="{{$album->album_name}}">
+                    @endif
+                </td>
+                <td>
+                    @if($album->categories->count())
+                        <ul>
+                            @foreach($album->categories as $cat)
+                                <li>{{$cat->category_name}}</li>
+                                @endforeach
+                        </ul>
+                    @else
+                        No categories
                     @endif
                 </td>
                 <td>{{$album->user->name}}</td>

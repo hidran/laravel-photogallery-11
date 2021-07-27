@@ -50,10 +50,11 @@ class AlbumsController extends Controller
     public function create(): View
     {
         $album = new Album();
+
         $categories = Category::orderBy('category_name')->get();
 
         return view('albums.createalbum',
-            ['album' => $album, 'categories' => $categories]);
+            ['album' => $album, 'categories' => $categories, 'selectedCategories' => []]);
     }
 
     /**
@@ -126,7 +127,9 @@ class AlbumsController extends Controller
      */
     public function edit(Album $album): View
     {
-        return view('albums.editalbum')->withAlbum($album);
+$categories = Category::orderBy('category_name')->get();
+        $selectedCategories = $album->categories->pluck('id')->toArray();
+        return view('albums.editalbum')->with(compact('categories','album', 'selectedCategories'));
     }
 
     /**
@@ -148,6 +151,9 @@ class AlbumsController extends Controller
             $this->processFile($request, $album);
         }
         $res = $album->save();
+        if($req->has('categories')){
+            $album->categories()->sync($req->input('categories'));
+        }
         $messaggio = $res ? 'Album   ' . $album->album_name . ' Updated' : 'Album ' . $album->album_name . ' was not updated';
         session()->flash('message', $messaggio);
         return redirect()->route('albums.index');
