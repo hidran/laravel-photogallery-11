@@ -175,8 +175,8 @@ class AlbumsController extends Controller
     {
         $thumbnail = $album->album_thumb;
         $res = $album->delete();
-        if ($thumbnail) {
-            Storage::delete($thumbnail);
+        if ($res && $thumbNail && \Storage::exists($thumbNail)) {
+            \Storage::delete($thumbNail);
         }
         if (request()->ajax()) {
             return $res;
