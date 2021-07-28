@@ -13,6 +13,7 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/albums/{album}/images', [AlbumsController::class,'getImages'])->name('albums.images')
         ->middleware('can:view,album');
     Route::resource('photos', PhotosController::class);
+    Route::resource('categories', CategoryController::class);
 });
 
 
@@ -29,5 +30,5 @@ Route::group(['prefix' => 'gallery'], function (){
     Route::get('categories/{category}/albums',  [GalleryController::class, 'showCategoryAlbums'])->name('gallery.categories.albums');
 });
 
-Route::resource('categories', CategoryController::class);
+
 require __DIR__.'/auth.php';

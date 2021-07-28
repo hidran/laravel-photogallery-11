@@ -15,7 +15,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return Category::with('albums')->get();
+        $categories = Category::whereUserId(auth()->id())->orderBy('category_name')->withCount('albums')->paginate(10);
+       return view('categories.index', compact('categories'));
     }
 
     /**

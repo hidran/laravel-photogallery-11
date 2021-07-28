@@ -42,6 +42,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|Album withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Album withoutTrashed()
  * @mixin Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Category[] $categories
+ * @property-read int|null $categories_count
+ * @property-read \App\Models\User $user
  */
 class Album extends Model
 {

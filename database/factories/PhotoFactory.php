@@ -22,7 +22,7 @@ class PhotoFactory extends Factory
             'name' => $this->faker->text(60),
             'description' => $this->faker->text(128),
             'img_path' => $this->faker->imageUrl(),
-            'created_at' => $this->faker->dateTime(),
+            //  'created_at' => $this->faker->dateTime(),
             'album_id' => Album::factory(),
         ];
     }
