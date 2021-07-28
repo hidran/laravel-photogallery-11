@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Photo;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Storage;
@@ -39,6 +40,12 @@ class AlbumsController extends Controller
             $queryBuilder->where('album_name', 'like',
                 $request->input('album_name') . '%');
         }
+if ($request->has('category_id')) {
+            $queryBuilder->whereHas('categories', fn( $q) => $q->where('category_id',$request->category_id)) ;
+
+
+        }
+
         $albums = $queryBuilder->paginate($albumsPerPage);
         return view('albums.albums', ['albums' => $albums]);
     }
