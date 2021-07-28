@@ -82,7 +82,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Album::class);
     }
-
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class)->withCount('albums')->orderBy('category_name');
+    }
     /**
      * Get the attributes that should be cast.
      *
