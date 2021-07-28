@@ -1,10 +1,13 @@
 @extends('templates.default')
 @section('content')
-    <style>
-        .navigation{
-            justify-content-center;
-        }
+
     </style>
+
+@if(session()->has('message'))
+    <x-alert-info>{{ session()->get('message') }}</x-alert-info>
+@endif
+<div class="row">
+    <div class="col-sm-8">
     <table class="table tablr-striped table-dark">
 
         <thead>
@@ -36,4 +39,9 @@
             <tr class=""><th colspan="5">{{$categories->links('vendor.pagination.bootstrap-4')}}</th> </tr>
             </tfoot>
     </table>
+    </div>
+    <div class="col-sm-4">
+        @include('categories.categoryform')
+    </div>
+</div>
 @endsection
