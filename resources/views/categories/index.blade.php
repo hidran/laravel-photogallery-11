@@ -79,14 +79,33 @@
     <script>
         $('document').ready(function () {
             $('div.alert').fadeOut(5000);
-            $('form .btn-danger ').on('click',function (evt) {
-                alert('clicked')
-                console.log(evt)
-                evt.preventDefault();
-                console.log(this)
+            $('form .btn-danger ').on('click',function (ele) {
+                ele.preventDefault();
 
+                var f = this.parentNode;
+                var categoryId = this.id.replace('btnDelete-','')*1;
+                var Trid ='tr-'+ categoryId;
+                var urlCategory = f.action;
 
+                $.ajax(
+                    urlCategory,
+                    {
+                        method: 'DELETE',
+                        data : {
+                            '_token' : window.Laravel.csrf_token
+                        },
+                        complete : function (resp) {
+                           console.log(resp)
+                            if(resp.responseText == 1){
+
+                            } else {
+                                alert('Problem contacting server');
+                            }
+                        }
+                    }
+                )
             });
+            return false;
         });
     </script>
 @endsection
