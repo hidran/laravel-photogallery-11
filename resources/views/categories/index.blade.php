@@ -25,7 +25,7 @@
             </thead>
             <tbody>
             @forelse( $categories as $cat)
-                <tr>
+                <tr id="tr-{{$cat->id}}">
                     <td>{{$cat->id}}</td>
                     <td>{{$cat->category_name}}</td>
                     <td>{{$cat->created_at->format('Y-m-d H:i')}}</td>
@@ -47,7 +47,7 @@
                               method="post">
                             @csrf
                             @method('delete')
-                            <button class="btn btn-danger  m-1"
+                            <button id="btnDelete-{{$cat->id}}" class="btn btn-danger  m-1"
                                     title="DELETE CATEGORY"><i
                                     class="bi bi-trash"></i></button>
                         </form>
@@ -78,8 +78,15 @@
     @parent
     <script>
         $('document').ready(function () {
-            alert('ok')
-            $('.alert').fadeOut(5000);
+            $('div.alert').fadeOut(5000);
+            $('form .btn-danger ').on('click',function (evt) {
+                alert('clicked')
+                console.log(evt)
+                evt.preventDefault();
+                console.log(this)
+
+
+            });
         });
     </script>
 @endsection

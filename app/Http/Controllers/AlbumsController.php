@@ -29,7 +29,7 @@ class AlbumsController extends Controller
      */
     public function index(Request $request): View
     {
-        $albumsPerPage = config('filesystems.albums_per_page');
+
         $queryBuilder = Album::orderBy('id', 'DESC')
             ->withCount('photos');
         $queryBuilder->where('user_id', Auth::id());

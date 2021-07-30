@@ -49,7 +49,7 @@ class CategoryController extends Controller
 
         $message = $res ? 'Category created' : 'Problem creating category';
         session()->flash('message', $message);
-        if ($request->ajax()) {
+        if ($request->expectsJson()) {
             return [
                 'message' => $message,
                 'success' => $res
@@ -105,7 +105,7 @@ class CategoryController extends Controller
         $res = $category->save();
         $message = $res ? 'Category deleted' : 'Problem deleting category';
         session()->flash('message', $message);
-        if ($request->ajax()) {
+        if ($request->expectsJson()) {
             return [
                 'message' => $message,
                 'success' => $res
@@ -125,7 +125,7 @@ class CategoryController extends Controller
         $res = $category->delete();
         $message = $res ? 'Category deleted' : 'Problem deleting category';
         session()->flash('message', $message);
-        if ($request->ajax()) {
+        if ($request->expectsJson()) {
             return [
                 'message' => $message,
                 'success' => $res
