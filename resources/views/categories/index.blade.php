@@ -95,9 +95,12 @@
                             '_token' : window.Laravel.csrf_token
                         },
                         complete : function (resp) {
-                           console.log(resp)
-                            if(resp.responseText == 1){
-
+                            var response = JSON.parse(resp.responseText);
+                            alert(response.message);
+                            if(response.success){
+                                //  alert(resp.responseText)
+                                $('#'+Trid).fadeOut();
+                                // $(li).remove();
                             } else {
                                 alert('Problem contacting server');
                             }
