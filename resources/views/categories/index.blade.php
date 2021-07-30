@@ -108,7 +108,34 @@
                     }
                 )
             });
-            return false;
+
+            // add Category ajax
+            $('#manageCategoryForm .btn-primary ').on('click',function (ele) {
+
+                ele.preventDefault();
+                var f = $('#manageCategoryForm');
+                var data  = f.serialize();
+                var urlCategory = f.attr('action');
+
+                $.ajax(
+                    urlCategory,
+                    {
+                        method: 'POST',
+                        data : data,
+                        complete : function (resp) {
+                            var response = JSON.parse(resp.responseText);
+                            alert(response.message);
+                            if(response.success){
+                                f[0].category_name.value = '';
+                                f[0].reset();
+                            } else {
+                                alert('Problem contacting server');
+                            }
+                        }
+                    }
+                )
+            });
         });
+
     </script>
 @endsection

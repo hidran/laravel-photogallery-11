@@ -47,12 +47,13 @@ class CategoryController extends Controller
             'user_id' => auth()->id()
         ]);
 
-        $message = $res ? 'Category created' : 'Problem creating category';
+        $message = $res ? 'Category created' : 'Problem creating category '.$request->category_name;
         session()->flash('message', $message);
         if ($request->expectsJson()) {
             return [
                 'message' => $message,
-                'success' => $res
+              'success' => $res,
+              'data' => $res
             ];
         }
         return redirect()->route('categories.index');
@@ -103,7 +104,7 @@ class CategoryController extends Controller
         $this->validate($request, $this->rules, $this->messages);
         $category->category_name = $request->category_name;
         $res = $category->save();
-        $message = $res ? 'Category deleted' : 'Problem deleting category';
+        $message = $res ? 'Category deleted' : 'Problem deleting category '.$request->category_name;
         session()->flash('message', $message);
         if ($request->expectsJson()) {
             return [
