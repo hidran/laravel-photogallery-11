@@ -104,7 +104,7 @@ class CategoryController extends Controller
         $this->validate($request, $this->rules, $this->messages);
         $category->category_name = $request->category_name;
         $res = $category->save();
-        $message = $res ? 'Category deleted' : 'Problem deleting category '.$request->category_name;
+        $message = $res ? 'Category updated' : 'Problem updating category '.$request->category_name;
         session()->flash('message', $message);
         if ($request->expectsJson()) {
             return [

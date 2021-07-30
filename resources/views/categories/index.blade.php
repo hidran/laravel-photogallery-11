@@ -11,7 +11,7 @@
             <x-alert-info>{{ session()->get('message') }}</x-alert-info>
         @endif
         @include('partials.inputerrors')
-        <table class="table tablr-striped table-dark">
+        <table class="table tablr-striped table-dark" id="categoryList">
 
             <thead>
             <tr>
@@ -27,7 +27,7 @@
             @forelse( $categories as $cat)
                 <tr id="tr-{{$cat->id}}">
                     <td>{{$cat->id}}</td>
-                    <td>{{$cat->category_name}}</td>
+                    <td  id="catid-{{$cat->id}}">{{$cat->category_name}}</td>
                     <td>{{$cat->created_at->format('Y-m-d H:i')}}</td>
                     <td>{{$cat->updated_at->format('Y-m-d H:i')}}</td>
                     <td>
@@ -39,7 +39,7 @@
                         @endif
                     </td>
                     <td class="d-flex justify-content-center">
-                        <a class="btn btn-outline-info m-1"
+                        <a id="upd-{{$cat->id}}"class="btn btn-outline-info m-1"
                            href="{{route('categories.edit',$cat->id )}}"
                            title="UPDATE CATEGORY"><i class="bi bi-pen"></i>
                         </a>
@@ -134,6 +134,22 @@
                         }
                     }
                 )
+            });
+            // update category ajax
+            // add Category ajax
+            $('#categoryList a.btn-outline-info').on('click',function (ele) {
+
+                ele.preventDefault();
+                var categoryId = this.id.replace('upd-','')*1;
+
+                var catRow = $('#tr-' +categoryId);
+                $('#categoryList tr').css('border','0px');
+                catRow.css('border', '1px solid red');
+                var urlUpdate  =this.href.replace('/edit','');
+                var tdCat =$('#catid-' + categoryId);
+                var category_name = tdCat.text();
+                var f = $('#manageCategoryForm');
+               console.log(f);
             });
         });
 
