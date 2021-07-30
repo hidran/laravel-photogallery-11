@@ -139,6 +139,14 @@
             });
             // update category ajax
             // add Category ajax
+            const f = $('#manageCategoryForm');
+            let selectedCategory = null;
+            f[0].category_name.addEventListener('keyup', function(){
+                if(selectedCategory){
+                    selectedCategory.text( f[0].category_name.value);
+                }
+
+            });
 
             $('#categoryList a.btn-outline-info').on('click', function (ele) {
 
@@ -150,18 +158,15 @@
                 catRow.css('border', '1px solid red');
                 var urlUpdate = this.href.replace('/edit', '');
                 var tdCat = $('#catid-' + categoryId);
+                selectedCategory = tdCat;
                 var category_name = tdCat.text();
                 var f = $('#manageCategoryForm');
 
                 f.attr('action', urlUpdate);
                 f[0].category_name.value = category_name;
-                f[0].category_name.addEventListener('keyup', function () {
-                    tdCat.text(f[0].category_name.value);
+                f[0].category_name.addEventListener('keyup', function(){
+                    tdCat.text( f[0].category_name.value);
                 });
-                if (f.find('[name="_method"').length !== 0) {
-
-                    f.find('[name="_method"').remove();
-                }
                 var input = document.createElement('input');
                 input.name = '_method';
                 input.type = 'hidden';
