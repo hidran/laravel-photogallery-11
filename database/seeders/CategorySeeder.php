@@ -35,7 +35,7 @@ class CategorySeeder extends Seeder
         foreach ($cats as $cat) {
             Category::create([
                 'category_name' => $cat,
-                'user_id' => $user_id
+                'user_id' => 51
             ]);
         }
     }
