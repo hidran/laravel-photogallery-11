@@ -20,6 +20,9 @@ return new class extends Migration {
             $table->unique(['category_name', 'user_id']);
             $table->softDeletes();
             $table->timestamps();
+        //    $table->softDeletes();
+
+           // $table->string('user_role', 16)->default('user')->nullable(false);
         });
     }
 
