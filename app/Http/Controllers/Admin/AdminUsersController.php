@@ -22,7 +22,12 @@ class AdminUsersController extends Controller
     public function getUsers()
     {
         $users =  User::select(['name','email','user_role','created_at','deleted_at'])->orderBy('name')->get();
-        $result = DataTables::of($users )->make(true);
+        $result = DataTables::of($users )->addColumn('action', function ($user) {
+            return '<a href="#edit-'.$user->id.'" class="btn btn-sm btn-primary"><i class="bi bi-pen"></i></a>&nbsp;'.
+                '<a title="soft delete" href="#edit-'.$user->id.'" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> </a>&nbsp;'.
+                '<a title="hard delete" href="#edit-'.$user->id.'" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> </a>';
+
+        })->make(true);
         return $result;
     }
     /**
