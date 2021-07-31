@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use DataTables;
 use Illuminate\Http\Request;
 
 class AdminUsersController extends Controller
@@ -15,10 +16,15 @@ class AdminUsersController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('name')->get();
-        return view('admin/users', compact('users'));
-    }
 
+        return view('admin/users');
+    }
+    public function getUsers()
+    {
+        $users =  User::select(['name','email','user_role','created_at','deleted_at'])->orderBy('name')->get();
+        $result = DataTables::of($users )->make(true);
+        return $result;
+    }
     /**
      * Show the form for creating a new resource.
      *
