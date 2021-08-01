@@ -12,7 +12,7 @@
 
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-
+    <script src="https://kit.fontawesome.com/0352d48ad0.js" crossorigin="anonymous"></script>
     <script>
         window.Laravel =@json( ['csrf_token' => csrf_token(),'csrfToken' => csrf_token()] )
     </script>

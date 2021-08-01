@@ -36,10 +36,11 @@
                         {data: 'action', name: 'action', orderable: false, searchable: false}
                     ]
                 });
-              $('#users-table').on('click', '.ajax', function (ele) {
+           $('#users-table').on('click', '.ajax', function (ele) {
                     ele.preventDefault();
-
-                    if(!confirm('Do you really want to delete this record')){
+                    const isDelete = this.id.indexOf('delete')>=0;
+                    const msg = isDelete ? 'Do you really want to delete this record' : 'Do you really want to restore this record?';
+                    if(!confirm(msg)){
                         return false;
                     }
 
@@ -50,7 +51,7 @@
                     $.ajax(
                         urlUsers,
                         {
-                            method: 'DELETE',
+                            method: isDelete? 'DELETE' :'PATCH',
                             data : {
                                 '_token' :  Laravel.csrfToken
 
@@ -61,8 +62,8 @@
                                     if (urlUsers.endsWith('hard=1')) {
                                         tr.parentNode.removeChild(tr);
                                     }
-
-                                    alert('User deleted correctly');
+                                    dataTable.ajax.reload();
+                                    alert(isDelete? 'User deleted correctly': 'User restored!');
 
                                     // $(li).remove();
                                 } else {

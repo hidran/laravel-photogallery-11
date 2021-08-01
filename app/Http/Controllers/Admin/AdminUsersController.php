@@ -24,12 +24,26 @@ class AdminUsersController extends Controller
         $id = $user->id;
 
 
-        $buttonEdit= '<a href="'.route('users.edit', ['user'=> $id]).'" id="edit-'.$id.'" class="btn btn-sm btn-primary"><i  class="bi bi-pen"></i></a>&nbsp;';
+        $buttonEdit= '<a href="'.route('users.edit', ['user'=> $id]).'" id="edit-'.$id
+            .'" class="btn btn-sm btn-primary"><i  class="bi bi-pen"></i></a>&nbsp;';
+         if($user->deleted_at){
+             $deleteRoute = route('admin.userrestore', ['user' => $id]);
+             $btnClass = 'btn-default';
+             $iconDelete = '<i class="bi bi-arrow-counterclockwise"></i>';
+             $btnId = 'restore-'.$id;
+         } else {
+             $deleteRoute = route('users.destroy', ['user' => $id]);
+             $iconDelete = '<i class="bi bi-trash"></i>';
+             $btnClass = 'btn-warning';
+             $btnId = 'delete-'.$id;
+         }
 
+        $buttonDelete = "<a  href='$deleteRoute' title='soft delete' id='$btnId' class='ajax $btnClass btn btn-sm'>$iconDelete</a>&nbsp;";
 
-        $buttonDelete = '<a  href="'.route('users.destroy', ['user'=>$id]).'" title="soft delete" id="delete-'.$id.'" class="ajax btn-warning btn btn-sm "><i class="bi bi-trash"></i></a>&nbsp;';
+        $buttonForceDelete = '<a href="'.route('users.destroy', ['user'=> $id])
+            .'?hard=1" title="hard delete" id="forcedelete-'.$id
+            .'" class="ajax btn btn-sm btn-danger"><i class="bi bi-trash"></i> </a>';
 
-        $buttonForceDelete = '<a href="'.route('users.destroy', ['user'=> $id]).'?hard=1" title="hard delete" id="forcedelete-'.$id.'" class="ajax btn btn-sm btn-danger"><i class="bi bi-trash"></i> </a>';
         return $buttonEdit.$buttonDelete.$buttonForceDelete;
     }
     public function getUsers()
@@ -106,6 +120,18 @@ class AdminUsersController extends Controller
     {
         $user = User::withTrashed()->findOrFail($id);
         $res = $req->hard ? $user->forceDelete(): $user->delete();
+        return ''.$res;
+    }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+
+     */
+    public function restore($id)
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        $res =  $user->restore();
         return ''.$res;
     }
 }

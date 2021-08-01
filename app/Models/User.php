@@ -58,6 +58,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
     use SoftDeletes;
+    protected $dateFormat =' Y-m-d H:i';
 
     /**
      * The attributes that are mass assignable.
