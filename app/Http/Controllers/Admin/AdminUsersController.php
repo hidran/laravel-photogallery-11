@@ -19,13 +19,24 @@ class AdminUsersController extends Controller
 
         return view('admin/users');
     }
+    private function getUserButtons(User $user)
+    {
+        $id = $user->id;
+
+
+        $buttonEdit= '<a href="'.route('users.edit', ['user'=> $id]).'" id="edit-'.$id.'" class="btn btn-sm btn-primary"><i  class="bi bi-pen"></i></a>&nbsp;';
+
+
+        $buttonDelete = '<a  href="'.route('users.destroy', ['user'=>$id]).'" title="soft delete" id="delete-'.$id.'" class="ajax btn-warning btn btn-sm "><i class="bi bi-trash"></i></a>&nbsp;';
+
+        $buttonForceDelete = '<a href="'.route('users.destroy', ['user'=> $id]).'?hard=1" title="hard delete" id="forcedelete-'.$id.'" class="ajax btn btn-sm btn-danger"><i class="bi bi-trash"></i> </a>';
+        return $buttonEdit.$buttonDelete.$buttonForceDelete;
+    }
     public function getUsers()
     {
-        $users =  User::select(['name','email','user_role','created_at','deleted_at'])->orderBy('name')->get();
+        $users =  User::select(['id','name','email','user_role','created_at','deleted_at'])->orderBy('name')->get();
         $result = DataTables::of($users )->addColumn('action', function ($user) {
-            return '<a href="#edit-'.$user->id.'" class="btn btn-sm btn-primary"><i class="bi bi-pen"></i></a>&nbsp;'.
-                '<a title="soft delete" href="#edit-'.$user->id.'" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> </a>&nbsp;'.
-                '<a title="hard delete" href="#edit-'.$user->id.'" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> </a>';
+            return  $this->getUserButtons($user);
 
         })->make(true);
         return $result;
