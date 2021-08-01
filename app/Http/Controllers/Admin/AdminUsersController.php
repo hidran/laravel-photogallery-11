@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserFormRequest;
 use App\Models\User;
 use DataTables;
 use Illuminate\Http\Request;
@@ -79,7 +80,7 @@ class AdminUsersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserFormRequest $request)
     {
         //
     }
@@ -113,12 +114,14 @@ class AdminUsersController extends Controller
      * @param  int  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(UserFormRequest $request, User $user)
     {
        $user->name = $request->name;
         $user->email = $request->email;
         $user->user_role = $request->user_role;
-        $user->save();
+        $res = $user->save();
+        $message = $res ? 'User modified': 'Problem updating user';
+        session()->flash('message', $message);
       return  redirect()->route('users.index');
     }
 

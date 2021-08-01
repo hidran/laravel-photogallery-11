@@ -1,5 +1,9 @@
 @extends('templates.admin')
 @section('content')
+    @if(session()->has('message'))
+        <x-alert-info>{{ session()->get('message') }}</x-alert-info>
+    @endif
+
     <h1>Users</h1>
     <table class="table table-striped" id="users-table">
         <thead>
@@ -74,5 +78,13 @@
                     )
                 });
             });
+    </script>
+@endsection
+@section('footer')
+    @parent
+    <script>
+    $('document').ready(function () {
+        $('.alert').fadeOut(5000);
+    });
     </script>
 @endsection

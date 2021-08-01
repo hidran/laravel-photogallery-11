@@ -13,12 +13,26 @@
                         <label for="name">NAME</label>
                         <input name="name" id="name" value="{{old('name', $user->name)}}" placeholder="user's name"
                                class="form-control">
+                        @error('name')
+                        <div class="alert alert-danger">
+                            @foreach($errors->get('name') as $error)
+                                {{$error}}<br>
+                            @endforeach
+                        </div>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <div class="form-group">
                             <label for="name">EMAIL</label>
                             <input type="email" name="email" id="email" value="{{old('email', $user->email)}}"
                                    placeholder="user's email" class="form-control">
+                            @error('email')
+                            <div class="alert alert-danger">
+                                @foreach($errors->get('email') as $error)
+                                    {{$error}}<br>
+                                @endforeach
+                            </div>
+                            @enderror
                         </div>
                     </div>
                     <div class="form-group">
@@ -29,6 +43,13 @@
                                 <option {{$user->user_role === 'user'? 'selected': ''}} value="user">USER</option>
                                 <option {{$user->user_role === 'admin'? 'selected': ''}} value="admin">ADMIN</option>
                             </select>
+                            @error('user_role')
+                              <div class="alert alert-danger">
+                                  @foreach($errors->get('user_role') as $error)
+                                      {{$error}}<br>
+                                  @endforeach
+                              </div>
+                            @enderror
                         </div>
                     </div>
                     <div class="form-group justify-content-center d-flex">
