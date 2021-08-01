@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserFormRequest;
 use App\Models\User;
 use DataTables;
+use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Testing\Fluent\Concerns\Has;
 
 class AdminUsersController extends Controller
 {
@@ -50,7 +52,7 @@ class AdminUsersController extends Controller
     }
     public function getUsers()
     {
-        $users =  User::select(['id','name','email','user_role','created_at','deleted_at'])->orderBy('name')->withTrashed()->get();
+        $users =  User::select(['id','name','email','user_role','created_at','deleted_at'])->latest()->withTrashed()->get();
         $result = DataTables::of($users )->addColumn('action', function ($user) {
             return  $this->getUserButtons($user);
 
@@ -71,7 +73,8 @@ class AdminUsersController extends Controller
      */
     public function create()
     {
-        //
+        $user = new User();
+        return view('admin.edituser', compact('user'));
     }
 
     /**
@@ -82,7 +85,14 @@ class AdminUsersController extends Controller
      */
     public function store(UserFormRequest $request)
     {
-        //
+        $user = new User();
+        $user->fill($request->only(['name','email','user_role']));
+        $user->password = Hash::make($request->email);
+
+        $res = $user->save();
+        $message = $res ? 'User created': 'Problem creating user';
+        session()->flash('message', $message);
+        return  redirect()->route('users.index');
     }
 
     /**

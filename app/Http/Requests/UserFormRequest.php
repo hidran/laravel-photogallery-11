@@ -23,13 +23,14 @@ class UserFormRequest extends FormRequest
      */
     public function rules()
     {
-
+       $id = $this->user?->id;
+      $emailRule = $id ? Rule::unique('users')->ignore($id):Rule::unique('users');
         return
             [
                 'name' => 'required|string|max:255',
                 'email' => [
                     'required','string','email','max:255',
-                    Rule::unique('users')->ignore($this->user->id),
+                    $emailRule
                 ],
                'user_role' => Rule::in(['user', 'admin']),
 
