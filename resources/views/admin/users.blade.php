@@ -4,6 +4,7 @@
     <table class="table table-striped" id="users-table">
         <thead>
         <tr>
+            <th>ID</th>
             <th>NAME</th>
             <th>EMAIL</th>
             <th>CREATED AT</th>
@@ -22,12 +23,12 @@
     <script>
         $(
             function () {
-                $('#users-table').DataTable({
+                const dataTable =    $('#users-table').DataTable({
                     processing: true,
                     serverSide: true,
                     ajax: '{{route('admin.getUsers')}}',
                     columns: [
-
+                        {data: 'id', name: 'ID'},
                         {data: 'name', name: 'name'},
                         {data: 'email', name: 'email'},
                         {data: 'created_at', name: 'created'},
@@ -35,7 +36,7 @@
                         {data: 'action', name: 'action', orderable: false, searchable: false}
                     ]
                 });
-                $('#users-table').on('click', '.ajax', function (ele) {
+              $('#users-table').on('click', '.ajax', function (ele) {
                     ele.preventDefault();
 
                     if(!confirm('Do you really want to delete this record')){
@@ -57,11 +58,11 @@
                             complete : function (resp) {
                                 console.log(resp);
                                 if(resp.responseText == 1) {
-
+                                    if (urlUsers.endsWith('hard=1')) {
                                         tr.parentNode.removeChild(tr);
+                                    }
 
-
-
+                                    alert('User deleted correctly');
 
                                     // $(li).remove();
                                 } else {

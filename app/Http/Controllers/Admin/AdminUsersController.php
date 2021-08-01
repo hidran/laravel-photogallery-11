@@ -102,9 +102,10 @@ class AdminUsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy($id, Request $req)
     {
-        $res = $user->delete();
+        $user = User::withTrashed()->findOrFail($id);
+        $res = $req->hard ? $user->forceDelete(): $user->delete();
         return ''.$res;
     }
 }
