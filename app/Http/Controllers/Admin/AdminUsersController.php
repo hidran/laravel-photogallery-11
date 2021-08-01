@@ -52,7 +52,14 @@ class AdminUsersController extends Controller
         $result = DataTables::of($users )->addColumn('action', function ($user) {
             return  $this->getUserButtons($user);
 
-        })->make(true);
+        })->editColumn('created_at', function($user ){
+            return $user->created_at? $user->created_at->format('Y-m-d H:i') : '';
+        })
+            ->editColumn('updated_at', function($user ){
+                return $user->updated_at? $user->updated_at->format('Y-m-d H:i') : '';
+            })->editColumn('deleted_at', function($user ){
+                return $user->deleted_at? $user->deleted_at->format('Y-m-d H:i') : '';
+            })->make(true);
         return $result;
     }
     /**
