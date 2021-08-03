@@ -1,9 +1,5 @@
 <?php
 
-use App\Http\Controllers\{AlbumsController,
-    CategoryController,
-    GalleryController,
-    PhotosController};
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -42,3 +38,8 @@ Route::group(['prefix' => 'gallery'], function () {
 require __DIR__ . '/auth.php';
 //Route::prefix('admin')->middleware([])->group(base_path('routes/admin.php'));
 
+
+// mail
+Route::get('testMail', function () {
+    Mail::to('hidran@gmail.com')->send(new TestEmail());
+});
