@@ -2,13 +2,12 @@
 
 namespace App\Mail;
 
-use http\Client\Curl\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class TestEmail extends Mailable
+class TestMd2 extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -17,9 +16,9 @@ class TestEmail extends Mailable
      *
      * @return void
      */
-    public function __construct(public $event)
+    public function __construct()
     {
-        $this->event = $event;
+        //
     }
 
     /**
@@ -29,7 +28,6 @@ class TestEmail extends Mailable
      */
     public function build()
     {
-        $user = User::first();
-        return $this->view('mails.testemail')->with($user);
+        return $this->markdown('mails.testmd2');
     }
 }

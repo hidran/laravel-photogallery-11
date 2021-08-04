@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewAlbumCreated;
 use App\Http\Requests\AlbumRequest;
 use App\Models\Album;
 use App\Models\Category;
@@ -84,6 +85,7 @@ if ($request->has('category_id')) {
         $album->album_thumb = '/';
         $res = $album->save();
         if ($res) {
+            event(new NewAlbumCreated($album));
             if ($request->has('categories')) {
                 $album->categories()->attach($request->input('categories'));
             }
