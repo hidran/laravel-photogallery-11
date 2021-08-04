@@ -16,9 +16,9 @@ class TestEmail extends Mailable
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(public $event)
     {
-        //
+        $this->event = $event;
     }
 
     /**
@@ -28,6 +28,7 @@ class TestEmail extends Mailable
      */
     public function build()
     {
-        return $this->view('mails.testemail')->with(['username'=>'Hidran']);
+        $data = print_r($this->event,1);
+        return $this->view('mails.testemail')->with(compact('data'));
     }
 }

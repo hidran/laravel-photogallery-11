@@ -1,1 +1,1 @@
-<h1> Hello World {{$username ?? ''}}
+<h1>Hello world {{$data}}</h1>
