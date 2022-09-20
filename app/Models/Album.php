@@ -49,6 +49,8 @@ class Album extends Model
 
     // protected $table = 'albums';
     // protected $primaryKey = 'album_name';
+    protected $fillable = ['album_name', 'description', 'user_id', 'album_thumb'];
+
     public function photos(): HasMany
     {
         return $this->hasMany(Photo::class);

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Album;
-use DB;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\View\View;
 
 class AlbumsController extends Controller
 {
@@ -21,7 +21,7 @@ class AlbumsController extends Controller
         }
         if ($request->has('album_name')) {
             $queryBuilder->where('album_name', 'like',
-                $request->input('album_name') . '%');
+                $request->input('album_name').'%');
         }
         $albums = $queryBuilder->get();
 
@@ -42,12 +42,14 @@ class AlbumsController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $request->only(['album_name', 'description']);
-        $data['user_id'] = 1;
-        // da aggiungere se c'è già la colonna album_thumb nella tabella
-        $data['album_thumb'] = '/';
-
-        $res = DB::table('albums')->insert($data);
-        $messaggio = $res ? 'Album   ' . $data['album_name'] . ' Created' : 'Album ' . $data['album_name'] . ' was not crerated';
+        $album = new Album();
+        $album->album_name = $data['album_name'];
+        $album->description = $data['description'];
+        $album->user_id = 1;
+        $album->album_thumb = '/';
+        $res = $album->save();
+        //$res =  Album::create($data);
+        $messaggio = $res ? 'Album   '.$data['album_name'].' Created' : 'Album '.$data['album_name'].' was not crerated';
         session()->flash('message', $messaggio);
 
         return redirect()->route('albums.index');
@@ -55,28 +57,40 @@ class AlbumsController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     *
+     * @return void
      */
-    public function show(Album $album): Album
+    public function show(Album $album)
     {
-        return $album;
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
+     *
+     *
+     * @return Response
      */
     public function edit(Album $album): View
     {
+        /*
+      $sql = 'select * from albums  where id=:id';
+      $albumEdit = Db::select($sql, ['id' => $album->id]);
+*/
         return view('albums.editalbum')->withAlbum($album);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, int $id): RedirectResponse
+    public function update(Request $request, Album $album): RedirectResponse
     {
         $data = $request->only(['album_name', 'description']);
-        $res = DB::table('albums')->where('id', $id)->update($data);
-        $messaggio = $res ? 'Album   ' . $id . ' Updated' : 'Album ' . $id . ' was not updated';
+        $album->album_name = $data['album_name'];
+        $album->description = $data['description'];
+        $res = $album->save();
+        $messaggio = $res ? 'Album   '.$album->album_name.' Updated' : 'Album '.$album->album_name.' was not updated';
         session()->flash('message', $messaggio);
 
         return redirect()->route('albums.index');
@@ -84,14 +98,17 @@ class AlbumsController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
      */
     public function destroy(Album $album): int
     {
+        // $res = DB::table('albums')->delete($album);
+        // $res = Album::where('id',$album)->delete();
+        //   Album::findOrFail($album)->delete();
+        //  Album::destroy($album);
         return +$album->delete();
     }
 
-    public function delete(int $album): int
+    public function delete(Album $album): int
     {
         return $this->destroy($album);
     }
