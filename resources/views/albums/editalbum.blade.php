@@ -6,8 +6,7 @@
      */
     @endphp
     <h3>EDIT ALBUM {{$album->album_name}}</h3>
-    <form method="post"
-          action="{{route('albums.update',['album' => $album->id])}}">
+    <form method="post" action="{{route('albums.update',['album' => $album->id])}}" enctype="multipart/form-data">
         @method('PATCH')
         @csrf
         <!-- {{method_field('PATCH')}}
@@ -18,7 +17,16 @@
             <input class="form-control" name="album_name" id="album_name"
                    value="{{$album->album_name}}">
         </div>
-        <div class="form-group  mb-3">
+        <div class="mb-3">
+            <label for="album_thumb" class="form-label">Thumbnail</label>
+            <input type="file" class="form-control" name="album_thumb" id="album_thumb" value="{{$album->album_name}}">
+        </div>
+        @if($album->album_thumb)
+            <div class="mb-3">
+                <img width="300" src="{{$album->album_thumb}}" alt="{{$album->name}}" title="{{$album->name}}">
+            </div>
+        @endif
+        <div class="mb-3">
             <label for='description' class="form-label">Description</label>
             <textarea class='form-control' name='description'
                       id='description'>{{$album->description}}</textarea>
