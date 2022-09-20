@@ -21,7 +21,7 @@
             padding: 70px 15px 0;
         }
     </style>
-
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="d-flex flex-column h-100">
 @include('templates.theme-switcher')

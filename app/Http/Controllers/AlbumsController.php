@@ -7,6 +7,7 @@ use DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class AlbumsController extends Controller
 {
@@ -15,7 +16,7 @@ class AlbumsController extends Controller
      */
     public function index(Request $request): View
     {
-        $queryBuilder = DB::table('albums')->orderBy('id', 'DESC');
+        $queryBuilder = Album::orderBy('id', 'DESC');
         if ($request->has('id')) {
             $queryBuilder->where('id', '=', $request->input('id'));
         }
@@ -63,6 +64,9 @@ class AlbumsController extends Controller
 
     /**
      * Show the form for editing the specified resource.
+     *
+     *
+     * @return Response
      */
     public function edit(Album $album): View
     {
@@ -84,14 +88,15 @@ class AlbumsController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *
      */
-    public function destroy(int $album): int
+    public function destroy(Album $album): int
     {
-        return DB::table('albums')->where('id', $album)->delete();
+        return +$album->delete();
     }
 
     public function delete(int $album): int
     {
-        return DB::table('albums')->where('id', $album)->delete();
+        return $this->destroy($album);
     }
 }

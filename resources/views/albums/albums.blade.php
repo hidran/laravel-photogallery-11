@@ -11,34 +11,35 @@
         @csrf
         <input id="_token" type="hidden" name="_token" value="{{csrf_token()}}">
     </form>
+
     <ul class="list-group">
         @foreach($albums as $album)
-            <ul class="list-group">
-                @foreach($albums as $album)
-                    <li class="list-group-item d-flex justify-content-between">
-                        ({{$album->id}}) {{$album->album_name}}
-                        <div>
-                            <a href="/albums/{{$album->id}}/edit"
-                               class="btn btn-primary">UPDATE</a>
-                            <a href="/albums/{{$album->id}}"
-                               class="btn btn-danger">DELETE</a>
-                        </div>
-                    </li>
-                @endforeach
-            </ul>
+            <li class="list-group-item d-flex justify-content-between">
+                ({{$album->id}}) {{$album->album_name}}
+                <div>
+                    <a href="/albums/{{$album->id}}/edit"
+                       class="btn btn-primary">UPDATE</a>
+                    <a href="/albums/{{$album->id}}"
+                       class="btn btn-danger">DELETE</a>
+                </div>
+            </li>
         @endforeach
     </ul>
+
 @endsection
 @section('footer')
     @parent
     <script>
         $('document').ready(function () {
             $('div.alert-info').fadeOut(5000);
-            $('ul').on('click', 'a.btn-danger', function (evt) {
+
+
+            $('ul').click(evt => {
                 evt.preventDefault();
-                const urlAlbum = $(this).attr('href');
-                const li = evt.target.parentNode.parentNode;
-                console.log(li)
+                const ele = evt.target;
+                const urlAlbum = ele.href;
+                const li = ele.parentNode.parentNode;
+
                 $.ajax(urlAlbum, {
                     method: 'DELETE',
                     data: {
@@ -56,6 +57,7 @@
 
                     }
                 });
+
             });
         });
 
