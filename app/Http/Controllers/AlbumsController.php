@@ -92,6 +92,6 @@ class AlbumsController extends Controller
 
     public function delete(int $album): int
     {
-        return $this->destroy($album);
+        return DB::table('albums')->where('id', $album)->delete();
     }
 }
