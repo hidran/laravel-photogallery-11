@@ -85,6 +85,15 @@ class AlbumsController extends Controller
         $data = $request->only(['album_name', 'description']);
         $album->album_name = $data['album_name'];
         $album->description = $data['description'];
+        if ($request->hasFile('album_thumb')) {
+
+            $file = $request->file('album_thumb');
+
+            $filename = $album->id . '.' . $file->extension();
+            $thumbnail = $file->storeAs(config('filesystems.album_thumbnail_dir'), $filename,
+                ['disk' => 'public']);
+            $album->album_thumb = $thumbnail;
+        }
         $res = $album->save();
         $messaggio = $res ? 'Album   '.$album->album_name.' Updated' : 'Album '.$album->album_name.' was not updated';
         session()->flash('message', $messaggio);
