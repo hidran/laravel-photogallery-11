@@ -55,6 +55,7 @@ class AlbumsController extends Controller
         $album->album_thumb = '/';
         $res = $album->save();
         if ($request->hasFile('album_thumb')) {
+
             $this->processFile($request, $album);
             $res = $album->save();
         }
@@ -62,6 +63,22 @@ class AlbumsController extends Controller
         $messaggio = $res ? 'Album   ' . $data['album_name'] . ' Created' : 'Album ' . $data['album_name'] . ' was not crerated';
         session()->flash('message', $messaggio);
         return redirect()->route('albums.index');
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Album $album
+     *
+     * @return void
+     */
+    public function processFile(Request $request, Album $album): void
+    {
+        $file = $request->file('album_thumb');
+
+        $filename = $album->id . '.' . $file->extension();
+        $thumbnail = $file->storeAs(config('filesystems.album_thumbnail_dir'), $filename,
+            ['disk' => 'public']);
+        $album->album_thumb = $thumbnail;
     }
 
     /**
@@ -113,7 +130,6 @@ class AlbumsController extends Controller
         session()->flash('message', $messaggio);
         return redirect()->route('albums.index');
     }
-
 
     /**
      * Remove the specified resource from storage.
