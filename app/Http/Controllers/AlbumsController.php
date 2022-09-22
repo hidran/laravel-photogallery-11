@@ -6,7 +6,7 @@ use App\Models\Album;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Storage;
 
 class AlbumsController extends Controller
 {
@@ -140,15 +140,16 @@ class AlbumsController extends Controller
      */
     public function destroy(Album $album): int
     {
-        // $res = DB::table('albums')->delete($album);
-        // $res = Album::where('id',$album)->delete();
-        //   Album::findOrFail($album)->delete();
-        //  Album::destroy($album);
-        return +$album->delete();
-    }
+        $thumbnail = $album->album_thumb;
+        $res = $album->delete();
+        if ($thumbnail) {
+            Storage::delete($thumbnail);
+        }
 
     public function delete(Album $album): int
     {
         return $this->destroy($album);
+
     }
+
 }
