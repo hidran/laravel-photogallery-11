@@ -11,6 +11,8 @@ class AlbumsController extends Controller
 {
     /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\Contracts\View\View
      */
     public function index(Request $request): View
     {
@@ -19,16 +21,16 @@ class AlbumsController extends Controller
             $queryBuilder->where('id', '=', $request->input('id'));
         }
         if ($request->has('album_name')) {
-            $queryBuilder->where('album_name', 'like',
-                $request->input('album_name') . '%');
+            $queryBuilder->where('album_name', 'like', $request->input('album_name') . '%');
         }
         $albums = $queryBuilder->get();
-
         return view('albums.albums', ['albums' => $albums]);
+
     }
 
     /**
      * Show the form for creating a new resource.
+     *
      */
     public function create(): View
     {
@@ -50,7 +52,6 @@ class AlbumsController extends Controller
         //$res =  Album::create($data);
         $messaggio = $res ? 'Album   ' . $data['album_name'] . ' Created' : 'Album ' . $data['album_name'] . ' was not crerated';
         session()->flash('message', $messaggio);
-
         return redirect()->route('albums.index');
     }
 
@@ -86,15 +87,7 @@ class AlbumsController extends Controller
         $album->album_name = $data['album_name'];
         $album->description = $data['description'];
         if ($request->hasFile('album_thumb')) {
-            $file = $request->file('album_thumb');
-
-            $filename = $album->id . '.' . $file->extension();
-
-            $thumbnail = $file->storeAs(config('filesystems.album_thumbnail_dir'),
-                $filename,
-                ['disk' => 'public']);
-
-            $album->album_thumb = $thumbnail;
+            $this->processFile($request, $album);
         }
 
         $res = $album->save();
@@ -116,6 +109,7 @@ class AlbumsController extends Controller
         //   Album::findOrFail($album)->delete();
         //  Album::destroy($album);
         return +$album->delete();
+
     }
 
     public function delete(Album $album): int
