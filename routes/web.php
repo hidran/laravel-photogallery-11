@@ -30,5 +30,7 @@ Route::get('/', [AlbumsController::class, 'index']);
 Route::get('/albums/{album}/images', [AlbumsController::class, 'getImages'])
     ->name('albums.images');
 
+
+Route::resource('photos', PhotosController::class);
 require __DIR__ . '/auth.php';
 
