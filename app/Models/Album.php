@@ -69,4 +69,9 @@ class Album extends Model
         }
         return $url;
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
