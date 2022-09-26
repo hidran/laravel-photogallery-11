@@ -9,7 +9,7 @@
             <th> TITLE</th>
             <th> ALBUM</th>
             <th> THUMBNAIL</th>
-
+            <th>&nbsp;</th>
         </tr>
         </thead>
         <tbody>
@@ -23,7 +23,9 @@
                 <td>
                     <img width="120" src="{{asset($image->img_path)}}">
                 </td>
-
+                <td>
+                    <a class="btn btn-danger" href="{{route('photos.destroy', $image)}}">DELETE</a>
+                </td>
             </tr>
 
         @empty
@@ -35,4 +37,38 @@
         @endforelse
         </tbody>
     </table>
+@endsection
+@section('footer')
+    @parent
+    <script>
+        $('document').ready(function () {
+
+            $('table').on('click', 'a.btn-danger', function (ele) {
+                ele.preventDefault();
+                var urlImg = $(this).attr('href');
+                // we add another parentNode because of the div
+                var tr = ele.target.parentNode.parentNode;
+                $.ajax(
+                    urlImg,
+                    {
+                        method: 'DELETE',
+                        data: {
+                            _token: "{{csrf_token()}}"
+                        },
+                        complete: function (resp) {
+                            console.log(resp);
+                            if (resp.responseText == 1) {
+                                //   alert(resp.responseText)
+
+                                tr.parentNode.removeChild(tr);
+                                // $(li).remove();
+                            } else {
+                                alert('Problem contacting server');
+                            }
+                        }
+                    }
+                )
+            });
+        });
+    </script>
 @endsection

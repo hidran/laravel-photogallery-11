@@ -85,6 +85,7 @@ class PhotosController extends Controller
      */
     public function destroy(Photo $photo)
     {
-        return +$photo->delete();
+        $res = $photo->delete();
+        return $res;
     }
 }
