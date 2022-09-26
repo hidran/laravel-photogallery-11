@@ -19,7 +19,8 @@
                         </div>
                     @endif
                     <div>
-                        <a href="/albums/{{$album->id}}/edit"
+                        <a href="{{route('albums.images',$album)}}" class="btn btn-primary">VIEW IMAGES</a>
+                        <a href="{{route('albums.edit',$album)}}"
                            class="btn btn-primary">UPDATE</a>
                         <a href="/albums/{{$album->id}}" class="btn btn-danger">DELETE</a>
                     </div>

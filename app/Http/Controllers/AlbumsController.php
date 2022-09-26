@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Album;
+use App\Models\Photo;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -148,9 +149,9 @@ class AlbumsController extends Controller
         return $res;
     }
 
-    public function delete(Album $album): int
+    public function getImages(Album $album)
     {
-        return $this->destroy($album);
-    }
+        return Photo::wherealbumId($album->id)->get();
 
+    }
 }
