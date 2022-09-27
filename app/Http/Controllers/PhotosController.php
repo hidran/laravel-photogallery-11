@@ -60,7 +60,7 @@ class PhotosController extends Controller
      */
     public function edit(Photo $photo)
     {
-        //
+        return view('images.editimage', compact('photo'));
     }
 
     /**
@@ -73,7 +73,7 @@ class PhotosController extends Controller
      */
     public function update(Request $request, Photo $photo)
     {
-        //
+        dd($request->file('img_path'));
     }
 
     /**

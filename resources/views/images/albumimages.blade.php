@@ -24,6 +24,7 @@
                     <img width="120" src="{{asset($image->img_path)}}">
                 </td>
                 <td>
+                    <a class="btn btn-primary" href="{{route('photos.edit', $image)}}">UPDATE</a>
                     <a class="btn btn-danger" href="{{route('photos.destroy', $image)}}">DELETE</a>
                 </td>
             </tr>
