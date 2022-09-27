@@ -2,7 +2,7 @@
 @section('content')
     <h1>ALBUMS</h1>
     @if(session()->has('message'))
-        <x-alert-info/>
+        <x-alert-info>{{session()->get('message')}}</x-alert-info>
     @endif
     <form>
         <input id="_token" type="hidden" name="_token" value="{{csrf_token()}}">

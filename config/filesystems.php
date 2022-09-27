@@ -72,6 +72,7 @@ return [
     'links' => [
         public_path('storage') => storage_path('app/public'),
     ],
-    'album_thumbnail_dir' => env('ALBUM_THUMB_DIR', 'images/album_thumbs')
+    'album_thumbnail_dir' => env('ALBUM_THUMB_DIR', 'images/album_thumbs'),
+    'img_dir' => env('IMG_DIR', 'images/')
 
 ];

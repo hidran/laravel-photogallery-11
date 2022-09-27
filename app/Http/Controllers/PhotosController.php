@@ -73,7 +73,35 @@ class PhotosController extends Controller
      */
     public function update(Request $request, Photo $photo)
     {
-        dd($request->file('img_path'));
+        $data = $request->only(['name', 'description']);
+        $photo->name = $data['name'];
+        $photo->description = $data['description'];
+        if ($request->hasFile('img_path')) {
+
+            $this->processFile($request, $photo);
+        }
+        $res = $photo->save();
+        $messaggio = $res ? 'Photo   ' . $photo->name . ' Updated' : 'Album ' . $photo->name . ' was not updated';
+        session()->flash('message', $messaggio);
+        return redirect()->route('albums.images', ['album' => $photo->album]);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Album $album
+     *
+     * @return void
+     */
+    public function processFile(Request $request, Photo $photo): void
+    {
+        $disk = config('filesystems.default');
+        $file = $request->file('img_path');
+
+        $filename = $photo->id . '.' . $file->extension();
+        $thumbnail = $file->storeAs(config('filesystems.img_dir'
+            . $photo->album_id), $filename,
+            ['disk' => $disk]);
+        $photo->img_path = $thumbnail;
     }
 
     /**
