@@ -155,7 +155,7 @@ class AlbumsController extends Controller
     public function getImages(Album $album)
     {
         $imgPerPage = config('filesystems.img_per_page');
-        $images = Photo::wherealbumId($album->id)->paginate($imgPerPage);
+        $images = Photo::wherealbumId($album->id)->latest()->paginate($imgPerPage);
         return view('images.albumimages', compact('album', 'images'));
 
     }

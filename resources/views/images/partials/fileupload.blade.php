@@ -5,6 +5,6 @@
 
 @if($photo->img_path)
     <div class="mb-3">
-        <img width="300" src="{{asset($photo->img_path)}}" alt="{{$photo->name}}" title="{{$photo->name}}">
+        <img width="300" src="{{asset($photo->path)}}" alt="{{$photo->name}}" title="{{$photo->name}}">
     </div>
 @endif

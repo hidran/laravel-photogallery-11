@@ -40,7 +40,31 @@ class PhotosController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        $photo = new Photo();
+        $photo->name = $request->input('name');
+        $photo->description = $request->input('description');
+        $photo->album_id = $request->input('album_id');
+        $this->processFile($request, $photo);
+        $photo->save();
+        return redirect(route('albums.images', $photo->album));
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Album $album
+     *
+     * @return void
+     */
+    public function processFile(Request $request, Photo $photo): void
+    {
+        $disk = config('filesystems.default');
+        $file = $request->file('img_path');
+        $name = preg_replace('@[^a-z]i@', '_', $photo->name);
+        $filename = $name . '.' . $file->extension();
+        $thumbnail = $file->storeAs(config('filesystems.img_dir'
+            . $photo->album_id), $filename,
+            ['disk' => $disk]);
+        $photo->img_path = $thumbnail;
     }
 
     /**
@@ -89,24 +113,6 @@ class PhotosController extends Controller
         $messaggio = $res ? 'Photo   ' . $photo->name . ' Updated' : 'Album ' . $photo->name . ' was not updated';
         session()->flash('message', $messaggio);
         return redirect()->route('albums.images', ['album' => $photo->album]);
-    }
-
-    /**
-     * @param Request $request
-     * @param Album $album
-     *
-     * @return void
-     */
-    public function processFile(Request $request, Photo $photo): void
-    {
-        $disk = config('filesystems.default');
-        $file = $request->file('img_path');
-
-        $filename = $photo->id . '.' . $file->extension();
-        $thumbnail = $file->storeAs(config('filesystems.img_dir'
-            . $photo->album_id), $filename,
-            ['disk' => $disk]);
-        $photo->img_path = $thumbnail;
     }
 
     /**
