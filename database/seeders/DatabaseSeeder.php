@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         Photo::truncate();
         User::factory(20)->has(
             Album::factory(10)->has(
-                Photo::factory(20)
+                Photo::factory(200)
             )
         )->create();
     }

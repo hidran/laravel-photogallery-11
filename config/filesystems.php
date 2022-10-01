@@ -73,6 +73,7 @@ return [
         public_path('storage') => storage_path('app/public'),
     ],
     'album_thumbnail_dir' => env('ALBUM_THUMB_DIR', 'images/album_thumbs'),
-    'img_dir' => env('IMG_DIR', 'images/')
-
+    'img_dir' => env('IMG_DIR', 'images/'),
+    'img_per_page' => env('IMG_PER_PAGE', 10),
+    'albums_per_page' => env('ALBUMS_PER_PAGE', 10),
 ];

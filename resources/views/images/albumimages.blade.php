@@ -34,11 +34,16 @@
 
         @empty
             <tr>
-                <td colspan="5">
+                <td colspan="6">
                     No images found
                 </td>
             </tr>
         @endforelse
+        <tr>
+            <td colspan="6">
+                {{$images->links('vendor.pagination.bootstrap-5')}}
+            </td>
+        </tr>
         </tbody>
     </table>
 @endsection

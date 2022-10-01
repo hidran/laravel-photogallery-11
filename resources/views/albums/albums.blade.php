@@ -32,6 +32,13 @@
                     </div>
                 </li>
             @endforeach
+            <li class="list-group-item">
+
+                {{$albums->links('vendor.pagination.bootstrap-5')}}
+
+
+                </tr>
+            </li>
         </ul>
     </form>
 @endsection

@@ -18,6 +18,8 @@ class AlbumsController extends Controller
      */
     public function index(Request $request): View
     {
+
+        $albumsPerPage = config('filesystems.albums_per_page');
         $queryBuilder = Album::orderBy('id', 'DESC')
             ->withCount('photos');
         if ($request->has('id')) {
@@ -27,7 +29,7 @@ class AlbumsController extends Controller
             $queryBuilder->where('album_name', 'like',
                 $request->input('album_name') . '%');
         }
-        $albums = $queryBuilder->get();
+        $albums = $queryBuilder->paginate($albumsPerPage);
         return view('albums.albums', ['albums' => $albums]);
     }
 
@@ -152,7 +154,8 @@ class AlbumsController extends Controller
 
     public function getImages(Album $album)
     {
-        $images = Photo::wherealbumId($album->id)->get();
+        $imgPerPage = config('filesystems.img_per_page');
+        $images = Photo::wherealbumId($album->id)->paginate($imgPerPage);
         return view('images.albumimages', compact('album', 'images'));
 
     }
