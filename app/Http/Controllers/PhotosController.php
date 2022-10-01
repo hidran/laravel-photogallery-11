@@ -24,9 +24,11 @@ class PhotosController extends Controller
      *
      * @return Response
      */
-    public function create()
+    public function create(Request $req)
     {
-        //
+        $photo = new Photo();
+        $album = $req->album_id ? Album::findOrFail($req->album_id) : new Album();
+        return view('images.editimage', compact('album', 'photo'));
     }
 
     /**
@@ -38,7 +40,7 @@ class PhotosController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request->all());
     }
 
     /**
@@ -62,7 +64,8 @@ class PhotosController extends Controller
      */
     public function edit(Photo $photo)
     {
-        return view('images.editimage', compact('photo'));
+        $album = $photo->album;
+        return view('images.editimage', compact('photo', 'album'));
     }
 
     /**

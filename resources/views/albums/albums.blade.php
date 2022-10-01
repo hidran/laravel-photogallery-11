@@ -19,6 +19,8 @@
                         </div>
                     @endif
                     <div>
+                        <a href="{{route('photos.create')}}?album_id={{$album->id}}" class="btn btn-primary">NEW
+                            IMAGE</a>
                         @if($album->photos_count)
                             <a href="{{route('albums.images',$album)}}" class="btn btn-primary">VIEW IMAGES
                                 ({{$album->photos_count}})</a>
@@ -28,7 +30,7 @@
                         @endif
                         <a href="{{route('albums.edit',$album)}}"
                            class="btn btn-primary">UPDATE</a>
-                        <a href="/albums/{{$album->id}}" class="btn btn-danger">DELETE</a>
+                        <a href="{{route('albums.destroy',$album)}}" class="btn btn-danger">DELETE</a>
                     </div>
                 </li>
             @endforeach
