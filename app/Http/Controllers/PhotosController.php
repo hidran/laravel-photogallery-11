@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Album;
 use App\Models\Photo;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 
 class PhotosController extends Controller
 {
@@ -28,7 +28,17 @@ class PhotosController extends Controller
     {
         $photo = new Photo();
         $album = $req->album_id ? Album::findOrFail($req->album_id) : new Album();
-        return view('images.editimage', compact('album', 'photo'));
+        $albums = $this->getAlbums();
+        return view('images.editimage',
+            compact('album', 'photo', 'albums'));
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAlbums(): Collection
+    {
+        return Album::orderBy('album_name')->select(['id', 'album_name'])->get();
     }
 
     /**
@@ -89,7 +99,9 @@ class PhotosController extends Controller
     public function edit(Photo $photo)
     {
         $album = $photo->album;
-        return view('images.editimage', compact('photo', 'album'));
+        $albums = $this->getAlbums();
+        return view('images.editimage',
+            compact('photo', 'album', 'albums'));
     }
 
     /**
@@ -102,12 +114,14 @@ class PhotosController extends Controller
      */
     public function update(Request $request, Photo $photo)
     {
-        $data = $request->only(['name', 'description']);
+
+        $data = $request->only(['name', 'description', 'album_id']);
         $photo->name = $data['name'];
         $photo->description = $data['description'];
         if ($request->hasFile('img_path')) {
             $this->processFile($request, $photo);
         }
+        $photo->album_id = $data['album_id'];
         $res = $photo->save();
 
         $messaggio = $res ? 'Photo   ' . $photo->name . ' Updated' : 'Album ' . $photo->name . ' was not updated';
