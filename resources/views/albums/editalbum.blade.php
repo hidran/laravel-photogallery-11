@@ -6,6 +6,7 @@
      */
     @endphp
     <h3>EDIT ALBUM {{$album->album_name}}</h3>
+    @include('partials.inputerrors')
     <form method="post" action="{{route('albums.update',['album' => $album->id])}}" enctype="multipart/form-data">
         @method('PATCH')
         @csrf

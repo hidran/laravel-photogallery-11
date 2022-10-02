@@ -5,15 +5,7 @@
      * * @var $photo App\Models\Photo
      */
     @endphp
-    @if(count($errors))
-        <div class="alert alert-danger">
-            <ul>
-                @foreach($errors->all() as $error)
-                    <li>{{$error}}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+    @include('partials.inputerrors')
     @if($photo->id)
         <h3>EDIT image {{$photo->name}}</h3>
         <form method="post" action="{{route('photos.update',$photo)}}" enctype="multipart/form-data">
