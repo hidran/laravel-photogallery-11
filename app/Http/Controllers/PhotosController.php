@@ -4,17 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\Photo;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 class PhotosController extends Controller
 {
+    protected array $rules = [
+
+        'album_id' => 'bail|required|integer|exists:albums,id',
+        'name' => 'required',
+        'img_path' => 'bail|required|image'
+    ];
+    protected array $messages = [
+        'album_id.required' => 'Il campo album è obbligatorio',
+        'description.required' => 'Il campo Descrizione è obbligatorio',
+        'name.required' => 'Il campo Nome è obbligatorio',
+        'img_path.required' => 'Il campo Immagine è obbligatorio'
+
+    ];
+
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return Collection
      */
-    public function index()
+    public function index(): Collection
     {
         return Photo::all();
     }
@@ -22,9 +37,11 @@ class PhotosController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @param \Illuminate\Http\Request $req
+     *
+     * @return \Illuminate\Contracts\View\View
      */
-    public function create(Request $req)
+    public function create(Request $req): View
     {
         $photo = new Photo();
         $album = $req->album_id ? Album::findOrFail($req->album_id) : new Album();
@@ -46,10 +63,12 @@ class PhotosController extends Controller
      *
      * @param Request $request
      *
-     * @return Response
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
     {
+        $this->validate($request, $this->rules, $this->messages);
         $photo = new Photo();
         $photo->name = $request->input('name');
         $photo->description = $request->input('description');
@@ -82,7 +101,7 @@ class PhotosController extends Controller
      *
      * @param Photo $photo
      *
-     * @return Response
+     * @return \App\Models\Photo
      */
     public function show(Photo $photo)
     {
@@ -94,7 +113,7 @@ class PhotosController extends Controller
      *
      * @param Photo $photo
      *
-     * @return Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function edit(Photo $photo)
     {
@@ -110,11 +129,12 @@ class PhotosController extends Controller
      * @param Request $request
      * @param Photo $photo
      *
-     * @return Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Photo $photo)
     {
-
+        unset($this->rules ['img_path']);
+        $this->validate($request, $this->rules, $this->messages);
         $data = $request->only(['name', 'description', 'album_id']);
         $photo->name = $data['name'];
         $photo->description = $data['description'];
@@ -136,9 +156,8 @@ class PhotosController extends Controller
      *
      * @return int
      */
-    public function destroy(Photo $photo)
+    public function destroy(Photo $photo): int
     {
-        $res = $photo->delete();
-        return $res;
+        return $photo->delete();
     }
 }
