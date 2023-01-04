@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\Photo;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
+use Storage;
 
 class PhotosController extends Controller
 {
@@ -24,6 +29,11 @@ class PhotosController extends Controller
 
     ];
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -37,21 +47,23 @@ class PhotosController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param \Illuminate\Http\Request $req
+     * @param Request $req
      *
-     * @return \Illuminate\Contracts\View\View
+     * @return View
      */
     public function create(Request $req): View
     {
         $photo = new Photo();
         $album = $req->album_id ? Album::findOrFail($req->album_id) : new Album();
         $albums = $this->getAlbums();
-        return view('images.editimage',
-            compact('album', 'photo', 'albums'));
+        return view(
+            'images.editimage',
+            compact('album', 'photo', 'albums')
+        );
     }
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function getAlbums(): Collection
     {
@@ -63,8 +75,8 @@ class PhotosController extends Controller
      *
      * @param Request $request
      *
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Validation\ValidationException
+     * @return RedirectResponse
+     * @throws ValidationException
      */
     public function store(Request $request)
     {
@@ -79,9 +91,8 @@ class PhotosController extends Controller
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Album $album
-     *
+     * @param Request $request
+     * @param Photo $photo
      * @return void
      */
     public function processFile(Request $request, Photo $photo): void
@@ -90,9 +101,12 @@ class PhotosController extends Controller
         $file = $request->file('img_path');
         $name = preg_replace('@[^a-z]i@', '_', $photo->name);
         $filename = $name . '.' . $file->extension();
-        $thumbnail = $file->storeAs(config('filesystems.img_dir'
-            . $photo->album_id), $filename,
-            ['disk' => $disk]);
+        $thumbnail = $file->storeAs(
+            config('filesystems.img_dir'
+            . $photo->album_id),
+            $filename,
+            ['disk' => $disk]
+        );
         $photo->img_path = $thumbnail;
     }
 
@@ -101,9 +115,9 @@ class PhotosController extends Controller
      *
      * @param Photo $photo
      *
-     * @return \App\Models\Photo
+     * @return Photo
      */
-    public function show(Photo $photo)
+    public function show(Photo $photo): Photo
     {
         return $photo;
     }
@@ -113,14 +127,16 @@ class PhotosController extends Controller
      *
      * @param Photo $photo
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @return Application|Factory|View
      */
-    public function edit(Photo $photo)
+    public function edit(Photo $photo): View|Factory|Application
     {
         $album = $photo->album;
         $albums = $this->getAlbums();
-        return view('images.editimage',
-            compact('photo', 'album', 'albums'));
+        return view(
+            'images.editimage',
+            compact('photo', 'album', 'albums')
+        );
     }
 
     /**
@@ -129,9 +145,9 @@ class PhotosController extends Controller
      * @param Request $request
      * @param Photo $photo
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function update(Request $request, Photo $photo)
+    public function update(Request $request, Photo $photo): RedirectResponse
     {
         unset($this->rules ['img_path']);
         $this->validate($request, $this->rules, $this->messages);

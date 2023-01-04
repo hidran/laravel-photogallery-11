@@ -6,13 +6,10 @@ use App\Http\Controllers\ProfileController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', static function () {
-    return view('welcome');
-});
-Route::get('/users', static function () {
-    return User::with('albums')->paginate(5);
-});
-Route::resource('/albums', AlbumsController::class);
+Route::get('/users', function () {
+        return User::with('albums')->paginate(5);
+    });
+    Route::resource('/albums', AlbumsController::class);
 
 Route::delete('/albums/{album}/delete', [AlbumsController::class, 'delete']);
 Route::get('/dashboard', static function () {
@@ -27,11 +24,16 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile',
         [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-Route::get('/', [AlbumsController::class, 'index']);
-Route::get('/albums/{album}/images', [AlbumsController::class, 'getImages'])
-    ->name('albums.images');
+    Route::get('/', [AlbumsController::class, 'index']);
+    Route::get('/albums/{album}/images', [AlbumsController::class, 'getImages'])
+        ->name('albums.images');
 
 
-Route::resource('photos', PhotosController::class);
+    Route::resource('photos', PhotosController::class);
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
 require __DIR__ . '/auth.php';
 
