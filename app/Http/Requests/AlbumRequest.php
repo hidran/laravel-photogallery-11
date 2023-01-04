@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -14,6 +15,11 @@ class AlbumRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        $album = $this->route()->album;
+
+        if ($album) {
+            return $album->user_id === Auth::id();
+        }
         return true;
     }
 

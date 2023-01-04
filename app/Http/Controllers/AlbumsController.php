@@ -8,6 +8,7 @@ use App\Models\Photo;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Storage;
 
 class AlbumsController extends Controller
@@ -23,6 +24,7 @@ class AlbumsController extends Controller
         $albumsPerPage = config('filesystems.albums_per_page');
         $queryBuilder = Album::orderBy('id', 'DESC')
             ->withCount('photos');
+        $queryBuilder->where('user_id', Auth::id());
         if ($request->has('id')) {
             $queryBuilder->where('id', '=', $request->input('id'));
         }
@@ -54,6 +56,7 @@ class AlbumsController extends Controller
     {
         $data = $request->safe(['album_name', 'description']);
         $album = new Album();
+        $album->user_id = Auth::id();
         $album->album_name = $data['album_name'];
         $album->description = $data['description'];
         $album->user_id = 1;
@@ -95,7 +98,10 @@ class AlbumsController extends Controller
      */
     public function show(Album $album): Album
     {
-        return $album;
+        if (Auth::id() === $album->user_id) {
+            return $album;
+        }
+        abort(404);
     }
 
     /**
