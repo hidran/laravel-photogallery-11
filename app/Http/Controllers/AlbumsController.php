@@ -151,6 +151,9 @@ class AlbumsController extends Controller
      */
     public function destroy(Album $album): int
     {
+        if (Gate::denies('manage-album', $album)) {
+            return false;
+        }
         $thumbnail = $album->album_thumb;
         $res = $album->delete();
         if ($thumbnail) {

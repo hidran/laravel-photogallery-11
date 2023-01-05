@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Auth;
+use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -16,9 +16,8 @@ class AlbumRequest extends FormRequest
     public function authorize(): bool
     {
         $album = $this->route()->album;
-
-        if ($album) {
-            return $album->user_id === Auth::id();
+        if (Gate::denies('manage-album', $album)) {
+            return false;
         }
         return true;
     }
