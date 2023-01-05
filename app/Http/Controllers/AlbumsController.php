@@ -113,10 +113,7 @@ class AlbumsController extends Controller
      */
     public function edit(Album $album): View
     {
-        /*
-      $sql = 'select * from albums  where id=:id';
-      $albumEdit = Db::select($sql, ['id' => $album->id]);
-*/
+        $this->authorize($album);
         return view('albums.editalbum')->withAlbum($album);
     }
 
@@ -130,6 +127,7 @@ class AlbumsController extends Controller
      */
     public function update(AlbumRequest $request, Album $album): RedirectResponse
     {
+        $this->authorize($album);
         $data = $request->only(['album_name', 'description']);
         $album->album_name = $data['album_name'];
         $album->description = $data['description'];

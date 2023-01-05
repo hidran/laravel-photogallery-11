@@ -16,6 +16,9 @@ class AlbumRequest extends FormRequest
     public function authorize(): bool
     {
         $album = $this->route()->album;
+        if (!$album->id) {
+            return true;
+        }
         if (Gate::denies('manage-album', $album)) {
             return false;
         }
