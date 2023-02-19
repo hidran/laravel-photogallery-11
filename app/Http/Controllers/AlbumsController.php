@@ -9,6 +9,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Storage;
 
 class AlbumsController extends Controller
@@ -160,7 +161,10 @@ class AlbumsController extends Controller
         if ($thumbnail) {
             Storage::delete($thumbnail);
         }
-        return $res;
+        if (request()->ajax()) {
+            return $res;
+        }
+        return redirect()->back();
     }
 
     public function getImages(Album $album)
