@@ -30,5 +30,6 @@ Route::get('/dashboard', static function () {
 Route::group(['prefix' => 'gallery'], function () {
     Route::get('/', [GalleryController::class, 'index']);
     Route::get('albums', [GalleryController::class, 'index']);
+    Route::get('album/{album}/images', [GalleryController::class, 'showAlbumImages'])->name('gallery.album.images');
 });
 require __DIR__ . '/auth.php';
