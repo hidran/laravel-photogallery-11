@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\Photo;
+use Auth;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -11,7 +12,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
-use Storage;
 
 class PhotosController extends Controller
 {
@@ -32,6 +32,7 @@ class PhotosController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->authorizeResource(Photo::class);
     }
 
     /**
@@ -67,7 +68,10 @@ class PhotosController extends Controller
      */
     public function getAlbums(): Collection
     {
-        return Album::orderBy('album_name')->select(['id', 'album_name'])->get();
+        return Album::whereId(Auth::id())->orderBy('album_name')->select([
+            'id',
+            'album_name'
+        ])->get();
     }
 
     /**
@@ -103,7 +107,7 @@ class PhotosController extends Controller
         $filename = $name . '.' . $file->extension();
         $thumbnail = $file->storeAs(
             config('filesystems.img_dir'
-            . $photo->album_id),
+                . $photo->album_id),
             $filename,
             ['disk' => $disk]
         );

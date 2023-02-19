@@ -13,6 +13,7 @@ use Storage;
 
 class AlbumsController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth');
