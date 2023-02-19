@@ -6,7 +6,7 @@ use App\Http\Controllers\PhotosController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn() => redirect()->route('dashboard'));
+Route::get('/', fn() => redirect()->route('gallery.index'));
 
 Route::middleware(['auth'])->prefix('dashboard')
     ->group(function () {
@@ -28,7 +28,7 @@ Route::get('/dashboard', static function () {
 
 // gallery
 Route::group(['prefix' => 'gallery'], function () {
-    Route::get('/', [GalleryController::class, 'index']);
+    Route::get('/', [GalleryController::class, 'index'])->name('gallery.index');
     Route::get('albums', [GalleryController::class, 'index']);
     Route::get('album/{album}/images', [GalleryController::class, 'showAlbumImages'])->name('gallery.album.images');
 });
