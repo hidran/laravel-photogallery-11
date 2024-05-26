@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('albums', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('album_name',128)->unique()->nullable(false);
+            $table->string('album_name', 128)->unique()->nullable(false);
             $table->string('album_thumb');
             $table->text('description')->nullable();
             $table->foreignId('user_id');
+            $table->foreign('user_id')->on('users')->references('id')
+                ->onDelete('cascade')->onUpdate('cascade');
             $table->softDeletes();
         });
     }
