@@ -12,9 +12,8 @@ Route::get('/users', function () {
     return User::with('albums')->paginate(5);
 });
 Route::get('/albums', function () {
-    return Album::paginate(5);
+    return Album::with('photos')->paginate(15);
 });
-
 
 Route::get('/dashboard', function () {
     return view('dashboard');

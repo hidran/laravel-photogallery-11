@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Album;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Album>
+ * @extends Factory<Album>
  */
 class AlbumFactory extends Factory
 {
@@ -18,7 +19,7 @@ class AlbumFactory extends Factory
     public function definition(): array
     {
         return [
-            'album_name' => $this->faker->text(20),
+            'album_name' => $this->faker->text(60),
             'album_thumb' => $this->faker->image(),
             'description' => $this->faker->text(120),
             'created_at' => $this->faker->dateTime(),
