@@ -11,7 +11,7 @@ Route::get('/', function () {
 Route::get('/users', function () {
     return User::with('albums')->paginate(5);
 });
-Route::get('/albums', [AlbumsController::class, 'index']);
+Route::resource('/albums', AlbumsController::class);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
