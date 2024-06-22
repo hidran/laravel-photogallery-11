@@ -23,7 +23,7 @@ class AlbumsController extends Controller
             $where['album_name'] = $request->get('album_name');
             $sql .= ' AND album_name=:album_name';
         }
-        //  dd($sql, $where);
+
         return DB::select($sql, $where);
     }
 
@@ -48,7 +48,7 @@ class AlbumsController extends Controller
      */
     public function show(Album $album)
     {
-        //
+        return 'Show';
     }
 
     /**
@@ -72,6 +72,6 @@ class AlbumsController extends Controller
      */
     public function destroy(Album $album)
     {
-        //
+        return 1;
     }
 }
