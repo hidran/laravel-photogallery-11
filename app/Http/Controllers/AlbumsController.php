@@ -25,7 +25,8 @@ class AlbumsController extends Controller
             $sql .= ' AND album_name=:album_name';
         }
 
-        return DB::select($sql, $where);
+        $albums = DB::select($sql, $where);
+        return view('albums', ['albums' => $albums]);
     }
 
     /**
