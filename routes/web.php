@@ -5,15 +5,15 @@ use App\Http\Controllers\ProfileController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
+Route::get('/', static function () {
     return view('welcome');
 });
-Route::get('/users', function () {
+Route::get('/users', static function () {
     return User::with('albums')->paginate(5);
 });
 Route::resource('/albums', AlbumsController::class);
-
-Route::get('/dashboard', function () {
+Route::get('/albums/{album}/delete', [AlbumsController::class, 'delete']);
+Route::get('/dashboard', static function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -26,4 +26,4 @@ Route::middleware('auth')->group(function () {
         [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
