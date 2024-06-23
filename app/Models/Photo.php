@@ -2,35 +2,44 @@
 
 namespace App\Models;
 
+use Database\Factories\PhotoFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
- * 
+ * App\Models\Photo
  *
  * @property int $id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $deleted_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
  * @property string $name
  * @property string|null $description
  * @property int $album_id
  * @property string $img_path
- * @method static \Database\Factories\PhotoFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|Photo newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Photo newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Photo query()
- * @method static \Illuminate\Database\Eloquent\Builder|Photo whereAlbumId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Photo whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Photo whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Photo whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Photo whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Photo whereImgPath($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Photo whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Photo whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @method static PhotoFactory factory(...$parameters)
+ * @method static Builder|Photo newModelQuery()
+ * @method static Builder|Photo newQuery()
+ * @method static \Illuminate\Database\Query\Builder|Photo onlyTrashed()
+ * @method static Builder|Photo query()
+ * @method static Builder|Photo whereAlbumId($value)
+ * @method static Builder|Photo whereCreatedAt($value)
+ * @method static Builder|Photo whereDeletedAt($value)
+ * @method static Builder|Photo whereDescription($value)
+ * @method static Builder|Photo whereId($value)
+ * @method static Builder|Photo whereImgPath($value)
+ * @method static Builder|Photo whereName($value)
+ * @method static Builder|Photo whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|Photo withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Photo withoutTrashed()
+ * @mixin Eloquent
  */
 class Photo extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 }
