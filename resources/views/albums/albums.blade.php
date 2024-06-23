@@ -10,11 +10,19 @@
     </form>
     <ul class="list-group">
         @foreach($albums as $album)
-            <li class="list-group-item d-flex justify-content-between">
-                ({{$album->id}}) {{$album->album_name}}
-                <a href="/albums/{{$album->id}}"
-                   class="btn btn-danger">DELETE</a>
-            </li>
+            <ul class="list-group">
+                @foreach($albums as $album)
+                    <li class="list-group-item d-flex justify-content-between">
+                        ({{$album->id}}) {{$album->album_name}}
+                        <div>
+                            <a href="/albums/{{$album->id}}/edit"
+                               class="btn btn-primary">UPDATE</a>
+                            <a href="/albums/{{$album->id}}"
+                               class="btn btn-danger">DELETE</a>
+                        </div>
+                    </li>
+                @endforeach
+            </ul>
         @endforeach
     </ul>
 @endsection
@@ -25,7 +33,7 @@
             $('ul').on('click', 'a.btn-danger', function (evt) {
                 evt.preventDefault();
                 const urlAlbum = $(this).attr('href');
-                const li = evt.target.parentNode;
+                const li = evt.target.parentNode.parentNode;
                 console.log(li)
                 $.ajax(urlAlbum, {
                     method: 'DELETE',

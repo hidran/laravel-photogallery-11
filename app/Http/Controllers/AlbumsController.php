@@ -25,7 +25,7 @@ class AlbumsController extends Controller
         }
 
         $albums = DB::select($sql, $where);
-        return view('albums', ['albums' => $albums]);
+        return view('albums.albums', ['albums' => $albums]);
     }
 
     /**
@@ -47,9 +47,9 @@ class AlbumsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Album $album)
+    public function show(Album $album): Album
     {
-        return 'Show';
+        return $album;
     }
 
     /**
