@@ -70,9 +70,13 @@ class AlbumsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Album $album)
+    public function update(Request $request, int $album)
     {
-        //
+        $data = $request->only(['album_name', 'description']);
+        $data['id'] = $album;
+        $query = 'UPDATE albums set album_name=:album_name, description=:description where id=:id';
+        $res = Db::update($query, $data);
+        dd($res);
     }
 
     /**

@@ -6,7 +6,13 @@
      */
     @endphp
     <h3>EDIT ALBUM {{$album->album_name}}</h3>
-    <form method="post">
+    <form method="post"
+          action="{{route('albums.update',['album' => $album->id])}}">
+        @method('PATCH')
+        @csrf
+        <!-- {{method_field('PATCH')}}
+        <input type="hidden" name="_method" value="PATCH">
+        -->
         <div class="form-group">
             <label for="album_name">Name</label>
             <input class="form-control" name="album_name" id="album_name"
@@ -18,7 +24,7 @@
                       id='description'>{{$album->description}}</textarea>
         </div>
         <div class="form-group">
-            <button class="btn btn-primary">INVIA</button>
+            <button class="btn btn-primary">SAVE</button>
         </div>
     </form>
 @endsection
