@@ -12,7 +12,7 @@ Route::get('/users', static function () {
     return User::with('albums')->paginate(5);
 });
 Route::resource('/albums', AlbumsController::class);
-Route::get('/albums/{album}/delete', [AlbumsController::class, 'delete']);
+Route::delete('/albums/{album}/delete', [AlbumsController::class, 'delete']);
 Route::get('/dashboard', static function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -26,4 +26,4 @@ Route::middleware('auth')->group(function () {
         [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

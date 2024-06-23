@@ -4,11 +4,16 @@
 @endsection
 @section('content')
     <h1>ALBUMS</h1>
+    <form>
+        @csrf
+        <input id="_token" type="hidden" name="_token" value="{{csrf_token()}}">
+    </form>
     <ul class="list-group">
         @foreach($albums as $album)
             <li class="list-group-item d-flex justify-content-between">
                 ({{$album->id}}) {{$album->album_name}}
-                <a href="/albums/{{$album->id}}/delete" class="btn btn-danger">DELETE</a>
+                <a href="/albums/{{$album->id}}"
+                   class="btn btn-danger">DELETE</a>
             </li>
         @endforeach
     </ul>
@@ -23,7 +28,10 @@
                 const li = evt.target.parentNode;
                 console.log(li)
                 $.ajax(urlAlbum, {
-
+                    method: 'DELETE',
+                    data: {
+                        _csrf: $('#_token').val()
+                    },
                     complete: function (resp, status) {
                         if (status !== 'error' && Number(resp.responseText) === 1) {
                             $(li).remove();
