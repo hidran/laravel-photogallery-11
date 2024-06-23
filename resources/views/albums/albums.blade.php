@@ -4,6 +4,9 @@
 @endsection
 @section('content')
     <h1>ALBUMS</h1>
+    @if(session()->has('message'))
+        <x-alert-info/>
+    @endif
     <form>
         @csrf
         <input id="_token" type="hidden" name="_token" value="{{csrf_token()}}">
@@ -30,6 +33,7 @@
     @parent
     <script>
         $('document').ready(function () {
+            $('div.alert-info').fadeOut(5000);
             $('ul').on('click', 'a.btn-danger', function (evt) {
                 evt.preventDefault();
                 const urlAlbum = $(this).attr('href');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -70,13 +71,19 @@ class AlbumsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, int $album)
-    {
+    public function update(
+        Request $request,
+        int $album
+    ): RedirectResponse {
         $data = $request->only(['album_name', 'description']);
         $data['id'] = $album;
         $query = 'UPDATE albums set album_name=:album_name, description=:description where id=:id';
         $res = Db::update($query, $data);
-        dd($res);
+        $message = 'Album with id= ' . $album;
+        $message .= $res ? ' Updated' : ' not updated';
+        session()->flash('message', $message);
+
+        return redirect()->route('albums.index');
     }
 
     /**
