@@ -7,7 +7,6 @@ use DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class AlbumsController extends Controller
 {
@@ -64,9 +63,6 @@ class AlbumsController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     *
-     * @return Response
      */
     public function edit(Album $album): View
     {
