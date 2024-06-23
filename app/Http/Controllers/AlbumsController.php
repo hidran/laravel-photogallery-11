@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Album;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -11,7 +12,7 @@ class AlbumsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $sql = 'select * from albums WHERE 1=1 ';
         $where = [];
@@ -25,6 +26,7 @@ class AlbumsController extends Controller
         }
 
         $albums = DB::select($sql, $where);
+
         return view('albums.albums', ['albums' => $albums]);
     }
 
@@ -55,9 +57,14 @@ class AlbumsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+    //public function edit(int $album)
     public function edit(Album $album)
     {
-        //
+        //        $sql = 'select * from albums  where id=:id';
+        //        $albumEdit = Db::select($sql, ['id' => $album]);
+        //$album = $albumEdit[0];
+
+        return view('albums.editalbum')->withAlbum($album);
     }
 
     /**
@@ -74,12 +81,14 @@ class AlbumsController extends Controller
     public function destroy(int $album): int
     {
         $sql = 'DELETE FROM albums WHERE id=:id';
+
         return DB::delete($sql, ['id' => $album]);
     }
 
     public function delete(int $album): int
     {
-        $sql = 'DELETE FROM albums WHERE id=:id';
+        $sql = 'DELETE FROM albums WHERE id = :id';
+
         return DB::delete($sql, ['id' => $album]);
     }
 }
