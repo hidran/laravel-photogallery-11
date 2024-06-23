@@ -21,7 +21,7 @@ class AlbumsController extends Controller
         }
         if ($request->has('album_name')) {
             $queryBuilder->where('album_name', 'like',
-                $request->input('album_name').'%');
+                $request->input('album_name') . '%');
         }
         $albums = $queryBuilder->get();
 
@@ -46,7 +46,7 @@ class AlbumsController extends Controller
         $data['album_thumb'] = '';
         $query = 'INSERT INTO albums (album_name, description, user_id,album_thumb)  values (:album_name, :description, :user_id,:album_thumb)';
         $res = DB::insert($query, $data);
-        $message = 'Album '.$data['album_name'];
+        $message = 'Album ' . $data['album_name'];
         $message .= $res ? ' created' : ' not created';
         session()->flash('message', $message);
 
@@ -85,7 +85,7 @@ class AlbumsController extends Controller
         $data['id'] = $album;
         $query = 'UPDATE albums set album_name=:album_name, description=:description where id=:id';
         $res = Db::update($query, $data);
-        $message = 'Album with id= '.$album;
+        $message = 'Album with id= ' . $album;
         $message .= $res ? ' Updated' : ' not updated';
         session()->flash('message', $message);
 
@@ -97,15 +97,11 @@ class AlbumsController extends Controller
      */
     public function destroy(int $album): int
     {
-        $sql = 'DELETE FROM albums WHERE id=:id';
-
-        return DB::delete($sql, ['id' => $album]);
+        return DB::table('albums')->where('id', $album)->delete();
     }
 
     public function delete(int $album): int
     {
-        $sql = 'DELETE FROM albums WHERE id = :id';
-
-        return DB::delete($sql, ['id' => $album]);
+        return DB::table('albums')->where('id', $album)->delete();
     }
 }
