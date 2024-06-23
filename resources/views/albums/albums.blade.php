@@ -35,8 +35,12 @@
 
 
             $('ul').click(evt => {
-                evt.preventDefault();
+
                 const ele = evt.target;
+                if (!ele.classList.contains('btn-danger')) {
+                    return;
+                }
+                evt.preventDefault();
                 const urlAlbum = ele.href;
                 const li = ele.parentNode.parentNode;
 
