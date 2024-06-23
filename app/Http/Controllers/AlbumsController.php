@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Album;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -72,17 +71,15 @@ class AlbumsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $album): RedirectResponse
+    public function destroy(int $album): int
     {
         $sql = 'DELETE FROM albums WHERE id=:id';
-        DB::delete($sql, ['id' => $album]);
-        return redirect()->back();
+        return DB::delete($sql, ['id' => $album]);
     }
 
-    public function delete(int $album): RedirectResponse
+    public function delete(int $album): int
     {
         $sql = 'DELETE FROM albums WHERE id=:id';
-        DB::delete($sql, ['id' => $album]);
-        return redirect()->back();
+        return DB::delete($sql, ['id' => $album]);
     }
 }
