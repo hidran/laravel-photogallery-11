@@ -15,18 +15,15 @@ class AlbumsController extends Controller
      */
     public function index(Request $request): View
     {
-        $sql = 'select * from albums WHERE 1=1 ';
-        $where = [];
+        $queryBuilder = DB::table('albums')->orderBy('id', 'DESC');
         if ($request->has('id')) {
-            $where['id'] = $request->get('id');
-            $sql .= ' AND ID=:id';
+            $queryBuilder->where('id', '=', $request->input('id'));
         }
         if ($request->has('album_name')) {
-            $where['album_name'] = $request->get('album_name');
-            $sql .= ' AND album_name=:album_name';
+            $queryBuilder->where('album_name', 'like',
+                $request->input('album_name').'%');
         }
-        $sql .= ' ORDER BY id DESC';
-        $albums = DB::select($sql, $where);
+        $albums = $queryBuilder->get();
 
         return view('albums.albums', ['albums' => $albums]);
     }
@@ -49,7 +46,7 @@ class AlbumsController extends Controller
         $data['album_thumb'] = '';
         $query = 'INSERT INTO albums (album_name, description, user_id,album_thumb)  values (:album_name, :description, :user_id,:album_thumb)';
         $res = DB::insert($query, $data);
-        $message = 'Album ' . $data['album_name'];
+        $message = 'Album '.$data['album_name'];
         $message .= $res ? ' created' : ' not created';
         session()->flash('message', $message);
 
@@ -88,7 +85,7 @@ class AlbumsController extends Controller
         $data['id'] = $album;
         $query = 'UPDATE albums set album_name=:album_name, description=:description where id=:id';
         $res = Db::update($query, $data);
-        $message = 'Album with id= ' . $album;
+        $message = 'Album with id= '.$album;
         $message .= $res ? ' Updated' : ' not updated';
         session()->flash('message', $message);
 
