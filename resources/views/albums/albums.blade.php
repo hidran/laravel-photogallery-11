@@ -14,19 +14,21 @@
                 ({{$album->id}}) {{$album->album_name}}
                 @if($album->album_thumb)
                     <div class="mb-3">
-                        <img width="300" src="{{$album->album_thumb}}"
+                      
+                        <img width="300"
+                             src="{{asset('storage/'.$album->album_thumb)}}"
                              alt="{{$album->name}}"
-                            <img width="300" src="{{asset('storage/'.$album->album_thumb)}}" alt="{{$album->name}}"
                              title="{{$album->name}}">
                     </div>
                 @endif
                 <div>
-                        <a href="/albums/{{$album->id}}/edit" class="btn btn-primary">UPDATE</a>
-                        <a href="/albums/{{$album->id}}" class="btn btn-danger">DELETE</a>
-                    </div>
-                </li>
-            @endforeach
-        </ul>
+                    <a href="/albums/{{$album->id}}/edit"
+                       class="btn btn-primary">UPDATE</a>
+                    <a href="/albums/{{$album->id}}" class="btn btn-danger">DELETE</a>
+                </div>
+            </li>
+        @endforeach
+    </ul>
     </form>
 @endsection
 @section('footer')

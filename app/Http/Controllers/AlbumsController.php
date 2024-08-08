@@ -20,7 +20,7 @@ class AlbumsController extends Controller
         }
         if ($request->has('album_name')) {
             $queryBuilder->where('album_name', 'like',
-                $request->input('album_name').'%');
+                $request->input('album_name') . '%');
         }
         $albums = $queryBuilder->get();
 
@@ -48,7 +48,7 @@ class AlbumsController extends Controller
         $album->album_thumb = '/';
         $res = $album->save();
         //$res =  Album::create($data);
-        $messaggio = $res ? 'Album   '.$data['album_name'].' Created' : 'Album '.$data['album_name'].' was not crerated';
+        $messaggio = $res ? 'Album   ' . $data['album_name'] . ' Created' : 'Album ' . $data['album_name'] . ' was not crerated';
         session()->flash('message', $messaggio);
 
         return redirect()->route('albums.index');
@@ -86,16 +86,21 @@ class AlbumsController extends Controller
         $album->album_name = $data['album_name'];
         $album->description = $data['description'];
         if ($request->hasFile('album_thumb')) {
-
             $file = $request->file('album_thumb');
 
             $filename = $album->id . '.' . $file->extension();
-            $thumbnail = $file->storeAs(config('filesystems.album_thumbnail_dir'), $filename,
+
+            $thumbnail = $file->storeAs(config('filesystems.album_thumbnail_dir'),
+                $filename,
                 ['disk' => 'public']);
+
             $album->album_thumb = $thumbnail;
         }
+
         $res = $album->save();
-        $messaggio = $res ? 'Album   '.$album->album_name.' Updated' : 'Album '.$album->album_name.' was not updated';
+
+
+        $messaggio = $res ? 'Album   ' . $album->album_name . ' Updated' : 'Album ' . $album->album_name . ' was not updated';
         session()->flash('message', $messaggio);
 
         return redirect()->route('albums.index');

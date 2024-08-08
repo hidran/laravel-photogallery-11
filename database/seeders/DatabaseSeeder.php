@@ -17,7 +17,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        if (config('database.default') !== 'sqlite') {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        }
+
         User::truncate();
         Album::truncate();
         Photo::truncate();
