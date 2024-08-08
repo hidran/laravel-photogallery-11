@@ -49,18 +49,23 @@ class Album extends Model
 
     // protected $table = 'albums';
     // protected $primaryKey = 'album_name';
-    protected $fillable = ['album_name', 'description', 'user_id', 'album_thumb'];
+    protected $fillable = [
+        'album_name',
+        'description',
+        'user_id',
+        'album_thumb'
+    ];
 
     public function photos(): HasMany
     {
         return $this->hasMany(Photo::class);
     }
 
-    public function getPathAttribute()
+    public function getPathAttribute(): string
     {
         $url = $this->album_thumb;
         if (!str_starts_with($url, 'http')) {
-            $url = 'storage/' . $url;
+            $url = asset('storage/' . $url);
         }
         return $url;
     }
