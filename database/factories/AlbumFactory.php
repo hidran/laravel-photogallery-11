@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Album;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,7 +19,7 @@ class AlbumFactory extends Factory
     {
         return [
             'album_name' => $this->faker->text(60),
-            'album_thumb' => $this->faker->image(),
+            'album_thumb' => $this->faker->imageUrl(),
             'description' => $this->faker->text(120),
             'created_at' => $this->faker->dateTime(),
             'user_id' => User::factory(),
