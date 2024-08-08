@@ -1,13 +1,14 @@
-    @php
-        /**
-     * @var $album App\Models\Album;
-    */
+@php
+    /**
+ * @var $album App\Models\Album;
+*/
 @endphp
 @extends('templates.default')
 @section('content')
     <h1>Edit Album</h1>
     @include('partials.inputerrors')
-    <form action="{{route('albums.update',['album' => $album->id])}}" method="POST" enctype="multipart/form-data">
+    <form action="{{route('albums.update',['album' => $album->id])}}"
+          method="POST" enctype="multipart/form-data">
         @csrf
         @method('PATCH')
         @csrf
@@ -16,7 +17,8 @@
         -->
         <div class="mb-3">
             <label for="album_name" class="form-label">Name</label>
-            <input class="form-control" name="album_name" id="album_name" value="{{$album->album_name}}">
+            <input class="form-control" name="album_name" id="album_name"
+                   value="{{$album->album_name}}">
         </div>
         @include('albums.partials.fileupload')
         <div class="form-group">
@@ -25,10 +27,12 @@
                       placeholder="Album description">{{$album->description}}</textarea>
 
         </div>
-        <div class="d-flex justify-content-end border">
+        <div class="mt-3 d-flex justify-content-end border">
             <button type="submit" class="btn btn-primary mx-1">Submit</button>
-            <a href="{{route('albums.index')}}" class="btn btn-outline-info  mx-1">Back</a>
-            <a href="{{route('albums.images', $album->id)}}" class="btn btn-outline-success  mx-1">Images</a>
+            <a href="{{route('albums.index')}}"
+               class="btn btn-outline-info  mx-1">Back</a>
+            <a href="{{route('albums.images', $album->id)}}"
+               class="btn btn-outline-success  mx-1">Images</a>
         </div>
     </form>
 @stop
