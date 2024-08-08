@@ -55,7 +55,6 @@ class AlbumsController extends Controller
         $album->album_thumb = '/';
         $res = $album->save();
         if ($request->hasFile('album_thumb')) {
-
             $this->processFile($request, $album);
             $res = $album->save();
         }
@@ -66,8 +65,8 @@ class AlbumsController extends Controller
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Album $album
+     * @param Request $request
+     * @param Album $album
      *
      * @return void
      */
@@ -76,7 +75,8 @@ class AlbumsController extends Controller
         $file = $request->file('album_thumb');
 
         $filename = $album->id . '.' . $file->extension();
-        $thumbnail = $file->storeAs(config('filesystems.album_thumbnail_dir'), $filename,
+        $thumbnail = $file->storeAs(config('filesystems.album_thumbnail_dir'),
+            $filename,
             ['disk' => 'public']);
         $album->album_thumb = $thumbnail;
     }
@@ -145,11 +145,12 @@ class AlbumsController extends Controller
         if ($thumbnail) {
             Storage::delete($thumbnail);
         }
+        return $res;
+    }
 
     public function delete(Album $album): int
     {
         return $this->destroy($album);
-
     }
 
 }
