@@ -22,6 +22,7 @@
         }
 
     </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="d-flex flex-column h-100">
 
@@ -61,6 +62,41 @@
                         Search
                     </button>
                 </form>
+                <ul class="nav navbar-nav navbar-right">
+                    @guest
+                        <li>
+                            <a class="nav-link"
+                               href="{{route('login')}}">Login</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="{{route('register')}}">Register</a>
+                        </li>
+                    @endguest
+                    @auth
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle  nav-link"
+                               data-bs-toggle="dropdown" role="button"
+                               aria-expanded="false">
+                                {{ Auth::user()->name }} <span
+                                    class="caret"></span>
+                            </a>
+
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+
+                                    <form id="logout-form"
+                                          action="{{ route('logout')}}"
+                                          method="POST">
+                                        {{ csrf_field() }}
+                                        <button class="btn btn-default">Logout
+                                        </button>
+                                    </form>
+                                </li>
+
+                            </ul>
+                        </li>
+                    @endauth
+                </ul>
             </div>
         </div>
     </nav>
