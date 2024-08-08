@@ -13,6 +13,12 @@ use Storage;
 
 class AlbumsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->authorizeResource(Album::class);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -20,7 +26,6 @@ class AlbumsController extends Controller
      */
     public function index(Request $request): View
     {
-
         $albumsPerPage = config('filesystems.albums_per_page');
         $queryBuilder = Album::orderBy('id', 'DESC')
             ->withCount('photos');
@@ -48,7 +53,7 @@ class AlbumsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\AlbumRequest $request
+     * @param AlbumRequest $request
      *
      * @return RedirectResponse
      */
@@ -59,7 +64,7 @@ class AlbumsController extends Controller
         $album->user_id = Auth::id();
         $album->album_name = $data['album_name'];
         $album->description = $data['description'];
-        $album->user_id = 1;
+        $album->user_id = Auth::user()->id;
         $album->album_thumb = '/';
         $res = $album->save();
         if ($request->hasFile('album_thumb')) {
@@ -113,21 +118,21 @@ class AlbumsController extends Controller
      */
     public function edit(Album $album): View
     {
-        $this->authorize($album);
         return view('albums.editalbum')->withAlbum($album);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\AlbumRequest $request
-     * @param \App\Models\Album $album
+     * @param AlbumRequest $request
+     * @param Album $album
      *
      * @return RedirectResponse
      */
-    public function update(AlbumRequest $request, Album $album): RedirectResponse
-    {
-        $this->authorize($album);
+    public function update(
+        AlbumRequest $request,
+        Album $album
+    ): RedirectResponse {
         $data = $request->only(['album_name', 'description']);
         $album->album_name = $data['album_name'];
         $album->description = $data['description'];
@@ -149,9 +154,6 @@ class AlbumsController extends Controller
      */
     public function destroy(Album $album): int
     {
-        if (Gate::denies('manage-album', $album)) {
-            return false;
-        }
         $thumbnail = $album->album_thumb;
         $res = $album->delete();
         if ($thumbnail) {
@@ -165,6 +167,5 @@ class AlbumsController extends Controller
         $imgPerPage = config('filesystems.img_per_page');
         $images = Photo::wherealbumId($album->id)->latest()->paginate($imgPerPage);
         return view('images.albumimages', compact('album', 'images'));
-
     }
 }
