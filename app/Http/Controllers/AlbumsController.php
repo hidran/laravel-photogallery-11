@@ -6,28 +6,27 @@ use App\Models\Album;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class AlbumsController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\View\View
+     * @return View
      */
     public function index(Request $request): View
     {
-
-
         $queryBuilder = Album::orderBy('id', 'DESC');
         if ($request->has('id')) {
             $queryBuilder->where('id', '=', $request->input('id'));
         }
         if ($request->has('album_name')) {
-            $queryBuilder->where('album_name', 'like', $request->input('album_name') . '%');
+            $queryBuilder->where('album_name', 'like',
+                $request->input('album_name') . '%');
         }
         $albums = $queryBuilder->get();
         return view('albums.albums', ['albums' => $albums]);
-
     }
 
     /**
@@ -36,15 +35,15 @@ class AlbumsController extends Controller
      */
     public function create(): View
     {
-        return view('albums.createalbum');
+        return view('albums.createalbum')->withAlbum(new Album());
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function store(Request $request): RedirectResponse
     {
@@ -56,7 +55,6 @@ class AlbumsController extends Controller
         $album->album_thumb = '/';
         $res = $album->save();
         if ($request->hasFile('album_thumb')) {
-
             $this->processFile($request, $album);
             $res = $album->save();
         }
@@ -69,9 +67,9 @@ class AlbumsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Models\Album $album
+     * @param Album $album
      *
-     * @return \App\Models\Album $album
+     * @return Album $album
      */
     public function show(Album $album): Album
     {
@@ -81,9 +79,9 @@ class AlbumsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \App\Models\Album $album
+     * @param Album $album
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Album $album): View
     {
@@ -97,10 +95,10 @@ class AlbumsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param int $id
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function update(Request $request, Album $album): RedirectResponse
     {
@@ -108,7 +106,6 @@ class AlbumsController extends Controller
         $album->album_name = $data['album_name'];
         $album->description = $data['description'];
         if ($request->hasFile('album_thumb')) {
-
             $this->processFile($request, $album);
         }
         $res = $album->save();
@@ -121,7 +118,7 @@ class AlbumsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Models\Album $album
+     * @param Album $album
      *
      * @return int
      */
@@ -132,12 +129,10 @@ class AlbumsController extends Controller
         //   Album::findOrFail($album)->delete();
         //  Album::destroy($album);
         return +$album->delete();
-
     }
 
     public function delete(Album $album): int
     {
         return $this->destroy($album);
-
     }
 }
