@@ -16,7 +16,8 @@ class AlbumRequest extends FormRequest
     public function authorize(): bool
     {
         $album = $this->route()->album;
-        if (!$album->id) {
+
+        if (!$album || !$album->id) {
             return true;
         }
         if (Gate::denies('manage-album', $album)) {
@@ -43,7 +44,8 @@ class AlbumRequest extends FormRequest
             //'user_id'
         ];
         if ($id) {
-            $ret['album_name'][] = Rule::unique('albums', 'album_name')->ignore($id);
+            $ret['album_name'][] = Rule::unique('albums',
+                'album_name')->ignore($id);
         } else {
             $ret['album_thumb'] = 'required|image';
             $ret['album_name'][] = Rule::unique('albums');
