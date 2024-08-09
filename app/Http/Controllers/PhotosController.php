@@ -68,7 +68,7 @@ class PhotosController extends Controller
      */
     public function getAlbums(): Collection
     {
-        return Album::whereId(Auth::id())->orderBy('album_name')->select([
+        return Album::whereUserId(Auth::id())->orderBy('album_name')->select([
             'id',
             'album_name'
         ])->get();
@@ -85,12 +85,14 @@ class PhotosController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, $this->rules, $this->messages);
+
         $photo = new Photo();
         $photo->name = $request->input('name');
         $photo->description = $request->input('description');
         $photo->album_id = $request->input('album_id');
         $this->processFile($request, $photo);
         $photo->save();
+
         return redirect(route('albums.images', $photo->album));
     }
 

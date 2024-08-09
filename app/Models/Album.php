@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Album
@@ -73,7 +76,7 @@ class Album extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function categories()
+    public function categories(): BelongsToMany
     {
         // album_category , album_id, category_id
         return $this->belongsToMany(Category::class);
