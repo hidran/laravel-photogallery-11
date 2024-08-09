@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Album;
+use App\Models\AlbumCategory;
+use App\Models\Category;
 use App\Models\Photo;
 use App\Models\User;
 use DB;
@@ -22,6 +24,8 @@ class DatabaseSeeder extends Seeder
         }
 
         User::truncate();
+        AlbumCategory::truncate();
+        Category::truncate();
         Album::truncate();
         Photo::truncate();
         User::factory(20)->has(
@@ -29,5 +33,7 @@ class DatabaseSeeder extends Seeder
                 Photo::factory(200)
             )
         )->create();
+        $this->call(CategorySeeder::class);
+        $this->call(AlbumCategorySeeder::class);
     }
 }
