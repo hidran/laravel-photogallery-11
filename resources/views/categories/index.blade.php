@@ -80,6 +80,7 @@
     @parent
     <script>
         $('document').ready(function () {
+            const categoryUrl = '{{ route('categories.store') }}';
             $('div.alert').fadeOut(5000);
             $('form .btn-danger ').on('click', function (ele) {
                 ele.preventDefault();
@@ -116,6 +117,7 @@
 
                 ele.preventDefault();
                 var f = $('#manageCategoryForm');
+                console.log(f);
                 var data = f.serialize();
                 var urlCategory = f.attr('action');
 
@@ -123,27 +125,30 @@
                     urlCategory,
                     {
                         method: 'POST',
-                        data: data,
-                        complete: function (resp) {
-                            var response = JSON.parse(resp.responseText);
-                            //  alert(response.message);
-                            if (response.success) {
-                                f[0].category_name.value = '';
-                                f[0].reset();
-                            } else {
-                                alert('Problem contacting server');
-                            }
-                        }
+                        data: data
+
                     }
-                )
+                ).done(response => {
+
+                    $('#methodType').remove();
+                    selectedCategory = null;
+                    f[0].action = categoryUrl;
+                    alert(response.message);
+                    if (response.success) {
+                        f[0].category_name.value = '';
+                        f[0].reset();
+                    } else {
+                        alert('Problem contacting server');
+                    }
+                })
             });
             // update category ajax
             // add Category ajax
             const f = $('#manageCategoryForm');
             let selectedCategory = null;
-            f[0].category_name.addEventListener('keyup', function(){
-                if(selectedCategory){
-                    selectedCategory.text( f[0].category_name.value);
+            f[0].category_name.addEventListener('keyup', function () {
+                if (selectedCategory) {
+                    selectedCategory.text(f[0].category_name.value);
                 }
 
             });
@@ -161,19 +166,20 @@
                 selectedCategory = tdCat;
                 var category_name = tdCat.text();
                 var f = $('#manageCategoryForm');
-
                 f.attr('action', urlUpdate);
                 f[0].category_name.value = category_name;
-                f[0].category_name.addEventListener('keyup', function(){
-                    tdCat.text( f[0].category_name.value);
-                });
-                var input = document.createElement('input');
-                input.name = '_method';
-                input.type = 'hidden';
-                input.value = 'PATCH';
-                f[0].appendChild(input);
+                const inputT = document.querySelector('#methodType');
+                if (!inputT) {
+                    var input = document.createElement('input');
+
+                    input.name = '_method';
+                    input.id = 'methodType'
+                    input.type = 'hidden';
+                    input.value = 'PATCH';
+                    f[0].appendChild(input);
+                }
+
             });
         });
-
     </script>
 @endsection
