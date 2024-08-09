@@ -152,14 +152,19 @@
                 var tdCat = $('#catid-' + categoryId);
                 var category_name = tdCat.text();
                 var f = $('#manageCategoryForm');
-                f.attr('action',urlUpdate);
+
+                f.attr('action', urlUpdate);
                 f[0].category_name.value = category_name;
-                f[0].category_name.addEventListener('keyup', function(){
-                    tdCat.text( f[0].category_name.value);
+                f[0].category_name.addEventListener('keyup', function () {
+                    tdCat.text(f[0].category_name.value);
                 });
+                if (f.find('[name="_method"').length !== 0) {
+
+                    f.find('[name="_method"').remove();
+                }
                 var input = document.createElement('input');
-                input.name ='_method';
-                input.type ="hidden";
+                input.name = '_method';
+                input.type = 'hidden';
                 input.value = 'PATCH';
                 f[0].appendChild(input);
             });
