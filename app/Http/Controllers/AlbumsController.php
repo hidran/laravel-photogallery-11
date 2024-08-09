@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AlbumRequest;
 use App\Models\Album;
-use App\Models\AlbumCategory;
 use App\Models\Category;
 use App\Models\Photo;
 use Illuminate\Contracts\View\View;
@@ -51,7 +50,10 @@ class AlbumsController extends Controller
     public function create(): View
     {
         $album = new Album();
-        return view('albums.createalbum', ['album' => $album]);
+        $categories = Category::orderBy('category_name')->get();
+
+        return view('albums.createalbum',
+            ['album' => $album, 'categories' => $categories]);
     }
 
     /**
@@ -63,23 +65,22 @@ class AlbumsController extends Controller
      */
     public function store(AlbumRequest $request): RedirectResponse
     {
-        $data = $request->safe(['album_name', 'description']);
         $album = new Album();
+        $album->album_name = $request->input('album_name');
+        $album->description = $request->input('description');
         $album->user_id = Auth::id();
-        $album->album_name = $data['album_name'];
-        $album->description = $data['description'];
-        $album->user_id = Auth::user()->id;
         $album->album_thumb = '/';
         $res = $album->save();
-        if ($request->hasFile('album_thumb')) {
-            $request->has('categories')){
+        if ($res) {
+            if ($request->has('categories')) {
                 $album->categories()->attach($request->input('categories'));
             }
-            if ($this->processFile($request, $album);
-            $res = $album->save();
+            $this->processFile($request, $album);
+            $album->save();
         }
+
         //$res =  Album::create($data);
-        $messaggio = $res ? 'Album   ' . $data['album_name'] . ' Created' : 'Album ' . $data['album_name'] . ' was not crerated';
+        $messaggio = $res ? 'Album   ' . $album->album_name . ' Created' : 'Album ' . $data['album_name'] . ' was not crerated';
         session()->flash('message', $messaggio);
         return redirect()->route('albums.index');
     }
