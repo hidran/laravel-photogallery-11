@@ -4,8 +4,9 @@
     </style>
 
 @if(session()->has('message'))
-    <x-alert-info>{{ session()->get('message') }}</x-alert-info>
+    <x-alert-info>{{ session()->get('messages') }}</x-alert-info>
 @endif
+@include('partials.inputerrors')
 <div class="row">
     <div class="col-sm-8">
         <h1>Categories list</h1>
