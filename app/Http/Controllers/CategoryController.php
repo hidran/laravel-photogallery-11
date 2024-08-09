@@ -128,7 +128,7 @@ class CategoryController extends Controller
         if ($request->expectsJson()) {
             return [
                 'message' => $message,
-                'success' => $res
+                'success' => (int)$res
             ];
         }
         return redirect()->route('categories.index');
