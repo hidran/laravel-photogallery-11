@@ -41,10 +41,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static Builder|Album whereUserId($value)
  * @method static \Illuminate\Database\Query\Builder|Album withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Album withoutTrashed()
- * @mixin Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Category[] $categories
  * @property-read int|null $categories_count
  * @property-read \App\Models\User $user
+ * @property-read string $path
+ * @mixin Eloquent
  */
 class Album extends Model
 {

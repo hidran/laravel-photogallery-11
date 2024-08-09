@@ -50,6 +50,10 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @method static Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|User withTrashed()
  * @method static \Illuminate\Database\Query\Builder|User withoutTrashed()
+ * @property Carbon|null $deleted_at
+ * @property-read Collection<int, \App\Models\Category> $categories
+ * @property-read int|null $categories_count
+ * @method static Builder|User whereDeletedAt($value)
  * @mixin Eloquent
  */
 class User extends Authenticatable

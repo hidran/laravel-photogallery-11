@@ -37,6 +37,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Photo whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|Photo withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Photo withoutTrashed()
+ * @property-read \App\Models\Album $album
+ * @property-read mixed $path
  * @mixin Eloquent
  */
 class Photo extends Model
