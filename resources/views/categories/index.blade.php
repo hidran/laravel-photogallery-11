@@ -27,7 +27,7 @@
             @forelse( $categories as $cat)
                 <tr id="tr-{{$cat->id}}">
                     <td>{{$cat->id}}</td>
-                    <td  id="catid-{{$cat->id}}">{{$cat->category_name}}</td>
+                    <td id="catid-{{$cat->id}}">{{$cat->category_name}}</td>
                     <td>{{$cat->created_at->format('Y-m-d H:i')}}</td>
                     <td>{{$cat->updated_at->format('Y-m-d H:i')}}</td>
                     <td>
@@ -39,7 +39,8 @@
                         @endif
                     </td>
                     <td class="d-flex justify-content-center">
-                        <a id="upd-{{$cat->id}}"class="btn btn-outline-info m-1"
+                        <a id="upd-{{$cat->id}}"
+                           class="btn btn-outline-info m-1"
                            href="{{route('categories.edit',$cat->id )}}"
                            title="UPDATE CATEGORY"><i class="bi bi-pen"></i>
                         </a>
@@ -47,7 +48,8 @@
                               method="post">
                             @csrf
                             @method('delete')
-                            <button id="btnDelete-{{$cat->id}}" class="btn btn-danger  m-1"
+                            <button id="btnDelete-{{$cat->id}}"
+                                    class="btn btn-danger  m-1"
                                     title="DELETE CATEGORY"><i
                                     class="bi bi-trash"></i></button>
                         </form>
@@ -79,27 +81,27 @@
     <script>
         $('document').ready(function () {
             $('div.alert').fadeOut(5000);
-            $('form .btn-danger ').on('click',function (ele) {
+            $('form .btn-danger ').on('click', function (ele) {
                 ele.preventDefault();
 
                 var f = this.parentNode;
-                var categoryId = this.id.replace('btnDelete-','')*1;
-                var Trid ='tr-'+ categoryId;
+                var categoryId = this.id.replace('btnDelete-', '') * 1;
+                var Trid = 'tr-' + categoryId;
                 var urlCategory = f.action;
 
                 $.ajax(
                     urlCategory,
                     {
                         method: 'DELETE',
-                        data : {
-                            '_token' : window.Laravel.csrf_token
+                        data: {
+                            '_token': window.Laravel.csrf_token
                         },
-                        complete : function (resp) {
+                        complete: function (resp) {
                             var response = JSON.parse(resp.responseText);
                             alert(response.message);
-                            if(response.success){
+                            if (response.success) {
                                 //  alert(resp.responseText)
-                                $('#'+Trid).fadeOut();
+                                $('#' + Trid).fadeOut();
                                 // $(li).remove();
                             } else {
                                 alert('Problem contacting server');
@@ -110,22 +112,22 @@
             });
 
             // add Category ajax
-            $('#manageCategoryForm .btn-primary ').on('click',function (ele) {
+            $('#manageCategoryForm .btn-primary ').on('click', function (ele) {
 
                 ele.preventDefault();
                 var f = $('#manageCategoryForm');
-                var data  = f.serialize();
+                var data = f.serialize();
                 var urlCategory = f.attr('action');
 
                 $.ajax(
                     urlCategory,
                     {
                         method: 'POST',
-                        data : data,
-                        complete : function (resp) {
+                        data: data,
+                        complete: function (resp) {
                             var response = JSON.parse(resp.responseText);
-                            alert(response.message);
-                            if(response.success){
+                            //  alert(response.message);
+                            if (response.success) {
                                 f[0].category_name.value = '';
                                 f[0].reset();
                             } else {
@@ -137,19 +139,19 @@
             });
             // update category ajax
             // add Category ajax
-            $('#categoryList a.btn-outline-info').on('click',function (ele) {
+            $('#categoryList a.btn-outline-info').on('click', function (ele) {
 
                 ele.preventDefault();
-                var categoryId = this.id.replace('upd-','')*1;
+                var categoryId = this.id.replace('upd-', '') * 1;
 
-                var catRow = $('#tr-' +categoryId);
-                $('#categoryList tr').css('border','0px');
+                var catRow = $('#tr-' + categoryId);
+                $('#categoryList tr').css('border', '0px');
                 catRow.css('border', '1px solid red');
-                var urlUpdate  =this.href.replace('/edit','');
-                var tdCat =$('#catid-' + categoryId);
+                var urlUpdate = this.href.replace('/edit', '');
+                var tdCat = $('#catid-' + categoryId);
                 var category_name = tdCat.text();
                 var f = $('#manageCategoryForm');
-               console.log(f);
+                console.log(f);
             });
         });
 
