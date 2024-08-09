@@ -14,7 +14,6 @@ class AddUserRoleCoumn extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->softDeletes();
             $table->string('user_role', 16)->default('user')->nullable(false);
         });
     }
@@ -27,8 +26,8 @@ class AddUserRoleCoumn extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-           $table->dropColumn('user_role');
-           $table->dropSoftDeletes();
+            $table->dropColumn('user_role');
+            $table->dropSoftDeletes();
         });
     }
 }
