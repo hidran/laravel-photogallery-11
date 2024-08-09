@@ -3,13 +3,14 @@
 
     </style>
 
-@if(session()->has('message'))
-    <x-alert-info>{{ session()->get('messages') }}</x-alert-info>
-@endif
-@include('partials.inputerrors')
+
 <div class="row">
     <div class="col-sm-8">
         <h1>Categories list</h1>
+        @if(session()->has('message'))
+            <x-alert-info>{{ session()->get('message') }}</x-alert-info>
+        @endif
+        @include('partials.inputerrors')
         <table class="table tablr-striped table-dark">
 
             <thead>
@@ -72,4 +73,13 @@
         @include('categories.categoryform')
     </div>
 </div>
+@endsection
+@section('footer')
+    @parent
+    <script>
+        $('document').ready(function () {
+            alert('ok')
+            $('.alert').fadeOut(5000);
+        });
+    </script>
 @endsection

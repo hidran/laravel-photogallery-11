@@ -30,7 +30,7 @@ class CategoryController extends Controller
 
         $categories = Category::getCategoriesByUserId(auth()->user())->paginate(10);
         $category = new Category();
-       return view('categories.index', compact('categories', 'category'));
+        return view('categories.index', compact('categories', 'category'));
     }
 
     /**
@@ -41,14 +41,14 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, $this->rules,$this->messages);
+        $this->validate($request, $this->rules, $this->messages);
         $res = Category::create([
             'category_name' => $request->category_name,
             'user_id' => auth()->id()
         ]);
 
         $message = $res ? 'Category created' : 'Problem creating category';
-        session()->flash('messages', $message);
+        session()->flash('message', $message);
         if ($request->ajax()) {
             return [
                 'message' => $message,
@@ -101,11 +101,11 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $this->validate($request, $this->rules, $this->messages);
-         $category->category_name = $request->category_name;
+        $category->category_name = $request->category_name;
         $res = $category->save();
         $message = $res ? 'Category deleted' : 'Problem deleting category';
-        session()->flash('messages', $message);
-        if($request->ajax()){
+        session()->flash('message', $message);
+        if ($request->ajax()) {
             return [
                 'message' => $message,
                 'success' => $res
@@ -124,8 +124,8 @@ class CategoryController extends Controller
     {
         $res = $category->delete();
         $message = $res ? 'Category deleted' : 'Problem deleting category';
-        session()->flash('messages', $message);
-        if($request->ajax()){
+        session()->flash('message', $message);
+        if ($request->ajax()) {
             return [
                 'message' => $message,
                 'success' => $res
