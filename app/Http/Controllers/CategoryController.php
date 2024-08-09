@@ -28,7 +28,8 @@ class CategoryController extends Controller
     {
         // $categories =auth()->user()->categories()->paginate(10);
 
-        $categories = Category::getCategoriesByUserId(auth()->user())->paginate(10);
+        $categories = Category::getCategoriesByUserId(auth()->user())->orderBy('id',
+            'desc')->paginate(10);
         $category = new Category();
         return view('categories.index', compact('categories', 'category'));
     }
@@ -47,13 +48,13 @@ class CategoryController extends Controller
             'user_id' => auth()->id()
         ]);
 
-        $message = $res ? 'Category created' : 'Problem creating category '.$request->category_name;
+        $message = $res ? 'Category created' : 'Problem creating category ' . $request->category_name;
         session()->flash('message', $message);
         if ($request->expectsJson()) {
             return [
                 'message' => $message,
-              'success' => $res,
-              'data' => $res
+                'success' => $res !== null,
+                'data' => $res
             ];
         }
         return redirect()->route('categories.index');
@@ -104,12 +105,12 @@ class CategoryController extends Controller
         $this->validate($request, $this->rules, $this->messages);
         $category->category_name = $request->category_name;
         $res = $category->save();
-        $message = $res ? 'Category updated' : 'Problem updating category '.$request->category_name;
+        $message = $res ? 'Category updated' : 'Problem updating category ' . $request->category_name;
         session()->flash('message', $message);
         if ($request->expectsJson()) {
             return [
                 'message' => $message,
-                'success' => $res
+                'success' => (int)$res
             ];
         }
         return redirect()->route('categories.index');

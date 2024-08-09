@@ -33,8 +33,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Category whereId($value)
  * @method static Builder|Category whereUpdatedAt($value)
  * @method static Builder|Category whereUserId($value)
- * @property-read \App\Models\User $user
- * @method static Builder|Category getCategoriesByUserId(\App\Models\User $user)
+ * @property-read User $user
+ * @method static Builder|Category getCategoriesByUserId(User $user)
  * @mixin Eloquent
  */
 class Category extends Model
@@ -58,7 +58,7 @@ class Category extends Model
         Builder $builder,
         User $user
     ): void {
-        $builder->whereUserId($user->id)->withCount('albums')->orderBy('category_name');
+        $builder->whereUserId($user->id)->withCount('albums');
     }
 
 }

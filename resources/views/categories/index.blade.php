@@ -7,9 +7,11 @@
 <div class="row">
     <div class="col-sm-8">
         <h1>Categories list</h1>
-        @if(session()->has('message'))
-            <x-alert-info>{{ session()->get('message') }}</x-alert-info>
-        @endif
+        <div id="alert-container">
+            @if(session()->has('message'))
+                <x-alert-info>{{ session()->get('message') }}</x-alert-info>
+            @endif
+        </div>
         @include('partials.inputerrors')
         <table class="table tablr-striped table-dark" id="categoryList">
 
@@ -79,107 +81,139 @@
 @section('footer')
     @parent
     <script>
-        $('document').ready(function () {
+        $(document).ready(function () {
             const categoryUrl = '{{ route('categories.store') }}';
+            const csrfToken = window.Laravel.csrf_token;
+            let selectedCategory = null;
+
             $('div.alert').fadeOut(5000);
-            $('form .btn-danger ').on('click', function (ele) {
-                ele.preventDefault();
 
-                var f = this.parentNode;
-                var categoryId = this.id.replace('btnDelete-', '') * 1;
-                var Trid = 'tr-' + categoryId;
-                var urlCategory = f.action;
+            // Utility function to extract ID from an element's ID attribute
+            function extractId(prefix, id) {
+                return parseInt(id.replace(prefix, ''), 10);
+            }
 
-                $.ajax(
-                    urlCategory,
-                    {
-                        method: 'DELETE',
-                        data: {
-                            '_token': window.Laravel.csrf_token
-                        },
-                        complete: function (resp) {
-                            var response = JSON.parse(resp.responseText);
-                            alert(response.message);
-                            if (response.success) {
-                                //  alert(resp.responseText)
-                                $('#' + Trid).fadeOut();
-                                // $(li).remove();
-                            } else {
-                                alert('Problem contacting server');
-                            }
+            // Function to handle the delete action
+            function handleDeleteClick(event) {
+                event.preventDefault();
+
+                const button = event.currentTarget;
+                const categoryId = extractId('btnDelete-', button.id);
+                const rowId = `#tr-${categoryId}`;
+                const urlCategory = button.closest('form').action;
+
+                $.ajax(urlCategory, {
+                    method: 'DELETE',
+                    data: {'_token': csrfToken},
+                    complete: function (response) {
+                        const jsonResponse = JSON.parse(response.responseText);
+
+                        if (jsonResponse.success) {
+                            showAlert(jsonResponse.message);
+                            $(rowId).fadeOut(500, function () {
+                                $(this).remove();  // `this` refers to the element being faded out
+                            });
+                        } else {
+                            alert('Problem contacting server');
                         }
                     }
-                )
-            });
+                });
+            }
 
-            // add Category ajax
-            $('#manageCategoryForm .btn-primary ').on('click', function (ele) {
+            // Function to handle the update action
+            function handleUpdateClick(event) {
+                event.preventDefault();
 
-                ele.preventDefault();
-                var f = $('#manageCategoryForm');
-                console.log(f);
-                var data = f.serialize();
-                var urlCategory = f.attr('action');
+                const button = event.currentTarget;
+                const categoryId = extractId('upd-', button.id);
 
-                $.ajax(
-                    urlCategory,
-                    {
-                        method: 'POST',
-                        data: data
+                const catRow = $(`#tr-${categoryId}`);
+                $('#categoryList tr').css('border', '0px');
+                catRow.css('border', '1px solid red');
 
-                    }
-                ).done(response => {
+                const urlUpdate = button.href.replace('/edit', '');
+                selectedCategory = $(`#catid-${categoryId}`);
 
+                const form = $('#manageCategoryForm');
+                form.attr('action', urlUpdate);
+                form.find('input[name="category_name"]').val(selectedCategory.text());
+
+                if (!$('#methodType').length) {
+                    $('<input>')
+                        .attr({
+                            type: 'hidden',
+                            id: 'methodType',
+                            name: '_method',
+                            value: 'PATCH'
+                        })
+                        .appendTo(form);
+                }
+            }
+
+            // Function to insert the new row
+            function insertRow(data) {
+                console.log('data', data)
+                const tableBody = $('#categoryList tbody');
+                const templateRow = $('#categoryList tbody tr:first').clone();
+                console.log(templateRow)
+                templateRow.attr('id', `tr-${data.id}`);
+                templateRow.find('td:nth-child(1)').text(data.id);
+                templateRow.find('td:nth-child(2)').attr('id', `catid-${data.id}`).text(data.category_name);
+                templateRow.find('td:nth-child(3)').text(data.created_at.replace('T', ' ').slice(0, 16));
+                templateRow.find('td:nth-child(4)').text(data.updated_at.replace('T', ' ').slice(0, 16));
+                templateRow.find('td:nth-child(5)').text('0'); // Assuming a default value of 0 for albums
+                templateRow.find('a[id^="upd"]').attr('id', `upd-${data.id}`).attr('href', `http://localhost:8000/dashboard/categories/${data.id}/edit`);
+                templateRow.find('form').attr('action', `http://localhost:8000/dashboard/categories/${data.id}`);
+                templateRow.find('button[id^="btnDelete"]').attr('id', `btnDelete-${data.id}`);
+
+                tableBody.prepend(templateRow);
+
+                // Attach event listeners to the new buttons
+                templateRow.find('button.btn-danger').on('click', handleDeleteClick);
+                templateRow.find('a.btn-outline-info').on('click', handleUpdateClick);
+            }
+
+            // Function to show a Bootstrap alert with a message
+            function showAlert(message) {
+                const alertDiv = $(`<div class="alert alert-info" role="alert">${message}</div>`);
+                $('#alert-container').append(alertDiv);
+                setTimeout(() => {
+                    alertDiv.fadeOut(500, () => alertDiv.remove());
+                }, 3000);
+            }
+
+            // Initial bindings on document ready
+            $('form .btn-danger').on('click', handleDeleteClick);
+            $('#categoryList a.btn-outline-info').on('click', handleUpdateClick);
+
+            // Handle form submission for adding a new category
+            $('#manageCategoryForm .btn-primary').on('click', function (event) {
+                event.preventDefault();
+
+                const form = $('#manageCategoryForm');
+                const data = form.serialize();
+
+                $.ajax(form.attr('action'), {
+                    method: 'POST',
+                    data: data
+                }).done(function (response) {
                     $('#methodType').remove();
                     selectedCategory = null;
-                    f[0].action = categoryUrl;
-                    alert(response.message);
+                    form[0].action = categoryUrl;
+
                     if (response.success) {
-                        f[0].category_name.value = '';
-                        f[0].reset();
+                        if (response.data) {
+                            insertRow(response.data);
+                        }
+
+                        form[0].reset();
+                        showAlert(response.message); // Show the alert with the message
                     } else {
                         alert('Problem contacting server');
                     }
-                })
-            });
-            // update category ajax
-            // add Category ajax
-            const f = $('#manageCategoryForm');
-            let selectedCategory = null;
-            f[0].category_name.addEventListener('keyup', function () {
-                if (selectedCategory) {
-                    selectedCategory.text(f[0].category_name.value);
-                }
-
-            });
-
-            $('#categoryList a.btn-outline-info').on('click', function (ele) {
-
-                ele.preventDefault();
-                var categoryId = this.id.replace('upd-', '') * 1;
-
-                var catRow = $('#tr-' + categoryId);
-                $('#categoryList tr').css('border', '0px');
-                catRow.css('border', '1px solid red');
-                var urlUpdate = this.href.replace('/edit', '');
-                var tdCat = $('#catid-' + categoryId);
-                selectedCategory = tdCat;
-                var category_name = tdCat.text();
-                var f = $('#manageCategoryForm');
-                f.attr('action', urlUpdate);
-                f[0].category_name.value = category_name;
-                const inputT = document.querySelector('#methodType');
-                if (!inputT) {
-                    var input = document.createElement('input');
-
-                    input.name = '_method';
-                    input.id = 'methodType'
-                    input.type = 'hidden';
-                    input.value = 'PATCH';
-                    f[0].appendChild(input);
-                }
-
+                });
             });
         });
+
     </script>
 @endsection
