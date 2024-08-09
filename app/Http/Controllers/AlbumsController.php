@@ -85,7 +85,7 @@ class AlbumsController extends Controller
         }
 
         //$res =  Album::create($data);
-        $messaggio = $res ? 'Album   ' . $album->album_name . ' Created' : 'Album ' . $data['album_name'] . ' was not crerated';
+        $messaggio = $res ? 'Album   ' . $album->album_name . ' Created' : 'Album ' . $album->album_name . ' was not crerated';
         session()->flash('message', $messaggio);
         return redirect()->route('albums.index');
     }
@@ -175,8 +175,8 @@ class AlbumsController extends Controller
     {
         $thumbnail = $album->album_thumb;
         $res = $album->delete();
-        if ($res && $thumbNail && \Storage::exists($thumbNail)) {
-            \Storage::delete($thumbNail);
+        if ($res && $thumbnail && Storage::exists($thumbnail)) {
+            Storage::delete($thumbnail);
         }
         if (request()->ajax()) {
             return $res;
