@@ -26,6 +26,9 @@
 
     </style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script>
+        window.Laravel =@json(['csrf_token' => csrf_token()], JSON_THROW_ON_ERROR)
+    </script>
 </head>
 <body class="d-flex flex-column h-100">
 
