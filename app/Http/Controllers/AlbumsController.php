@@ -54,7 +54,11 @@ class AlbumsController extends Controller
         $categories = Category::orderBy('category_name')->get();
 
         return view('albums.createalbum',
-            ['album' => $album, 'categories' => $categories, 'selectedCategories' => []]);
+            [
+                'album' => $album,
+                'categories' => $categories,
+                'selectedCategories' => []
+            ]);
     }
 
     /**
@@ -127,9 +131,10 @@ class AlbumsController extends Controller
      */
     public function edit(Album $album): View
     {
-$categories = Category::orderBy('category_name')->get();
+        $categories = Category::orderBy('category_name')->get();
         $selectedCategories = $album->categories->pluck('id')->toArray();
-        return view('albums.editalbum')->with(compact('categories','album', 'selectedCategories'));
+        return view('albums.editalbum')->with(compact('categories', 'album',
+            'selectedCategories'));
     }
 
     /**
@@ -151,8 +156,8 @@ $categories = Category::orderBy('category_name')->get();
             $this->processFile($request, $album);
         }
         $res = $album->save();
-        if($req->has('categories')){
-            $album->categories()->sync($req->input('categories'));
+        if ($request->has('categories')) {
+            $album->categories()->sync($request->input('categories'));
         }
         $messaggio = $res ? 'Album   ' . $album->album_name . ' Updated' : 'Album ' . $album->album_name . ' was not updated';
         session()->flash('message', $messaggio);

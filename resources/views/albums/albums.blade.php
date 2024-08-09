@@ -23,9 +23,9 @@
                 <td>({{$album->id}}) {{$album->album_name}}</td>
                 <td>
                     @if($album->album_thumb)
-                            <img width="120"
-                                 src="{{$album->path}}"
-                                 title="{{$album->album_name}}"
+                        <img width="120"
+                             src="{{$album->path}}"
+                             title="{{$album->album_name}}"
                              alt="{{$album->album_name}}">
                     @endif
                 </td>
@@ -34,7 +34,7 @@
                         <ul>
                             @foreach($album->categories as $cat)
                                 <li>{{$cat->category_name}}</li>
-                                @endforeach
+                            @endforeach
                         </ul>
                     @else
                         No categories
@@ -45,17 +45,20 @@
                 <td>
                     <div class="row">
                         <div class="col-md-3">
-                            <a title="Add new image" href="{{route('photos.create')}}?album_id={{$album->id}}"
+                            <a title="Add new image"
+                               href="{{route('photos.create')}}?album_id={{$album->id}}"
                                class="btn btn-primary">
                                 <i class="bi bi-plus-circle"></i>
                             </a>
                         </div>
                         <div class="col-md-3">
                             @if($album->photos_count)
-                                <a title="View images" href="{{route('albums.images',$album)}}"
+                                <a title="View images"
+                                   href="{{route('albums.images',$album)}}"
                                    class="btn btn-primary">
                                     <i
-                                        class="bi bi-zoom-in"></i> ({{$album->photos_count}})</a>
+                                        class="bi bi-zoom-in"></i>
+                                    ({{$album->photos_count}})</a>
                             @else
                                 <a disabled class="btn btn-primary pe-none"> <i
                                         class="bi bi-zoom-in"></i></a>
@@ -63,16 +66,19 @@
                         </div>
                         <div class="col-md-3">
                             <a href="{{route('albums.edit',$album)}}"
-                           class="btn btn-primary"> <i
+                               class="btn btn-primary"> <i
                                     class="bi bi-pen"></i></a>
                         </div>
                         <div class="col-md-3">
-                            <form id="form{{$album->id}}" method="POST" action="{{route('albums.destroy',$album)}}"
+                            <form id="form{{$album->id}}" method="POST"
+                                  action="{{route('albums.destroy',$album)}}"
                                   class="form-inline">
                                 @method('DELETE')
 
                                 @csrf
-                                <button class="btn btn-danger" id="{{$album->id}}"><i class="bi bi-trash"></i></button>
+                                <button class="btn btn-danger"
+                                        id="{{$album->id}}"><i
+                                        class="bi bi-trash"></i></button>
                             </form>
                         </div>
                     </div>
@@ -80,7 +86,7 @@
             </tr>
         @endforeach
         <tr>
-            <td colspan="5">
+            <td colspan="6">
                 <div class="row">
                     <div
 
@@ -118,7 +124,7 @@
                         },
                         complete: function (resp) {
                             console.log(resp);
-                            if (resp.responseText == 1) {
+                            if (+resp.responseText === 1) {
                                 //   alert(resp.responseText)
                                 tr.remove();
                                 // $(li).remove();
