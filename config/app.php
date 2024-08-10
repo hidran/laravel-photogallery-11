@@ -1,5 +1,6 @@
 <?php
 
+
 return [
 
     /*
@@ -39,7 +40,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool)env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -122,5 +123,7 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
-
+    'aliases' => [
+        'DataTables' => Yajra\DataTables\Facades\DataTables\DataTables::class
+    ]
 ];
