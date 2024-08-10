@@ -2,12 +2,13 @@
 
 namespace App\Mail;
 
+use App\Models\Album;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class TestMd2 extends Mailable
+class NotifyAdminNewAlbum extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -16,7 +17,7 @@ class TestMd2 extends Mailable
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(public User $admin, public Album $album)
     {
         //
     }
@@ -28,6 +29,6 @@ class TestMd2 extends Mailable
      */
     public function build()
     {
-        return $this->markdown('mails.testmd2');
+        return $this->markdown('mails.notifyadminnewalbum');
     }
 }

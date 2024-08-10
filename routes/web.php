@@ -1,8 +1,11 @@
 <?php
 
 use App\Events\NewAlbumCreated;
+use App\Http\Controllers\AlbumsController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\PhotosController;
 use App\Mail\TestEmail;
-use App\Mail\TestMd;
 use App\Models\Album;
 use Illuminate\Support\Facades\Route;
 

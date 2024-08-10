@@ -7,30 +7,31 @@ use App\Http\Requests\AlbumRequest;
 use App\Models\Album;
 use App\Models\Category;
 use App\Models\Photo;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
+use Auth;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Response;
 use Storage;
 
 class AlbumsController extends Controller
 {
-
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->authorizeResource(Album::class);
+        //   $this->authorizeResource(Album::class);
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return View
+     * @param Request $request
+     * @return Response
      */
-    public function index(Request $request): View
+    public function index(Request $request)
     {
-
+        /**
+         * @var Builder $queryBuilder
+         */
         $queryBuilder = Album::orderBy('id', 'DESC')
             ->withCount('photos');
         $queryBuilder->where('user_id', Auth::id());
@@ -41,104 +42,103 @@ class AlbumsController extends Controller
             $queryBuilder->where('album_name', 'like',
                 $request->input('album_name') . '%');
         }
-if ($request->has('category_id')) {
-            $queryBuilder->whereHas('categories', fn( $q) => $q->where('category_id',$request->category_id)) ;
-
-
+        if ($request->has('category_id')) {
+            $queryBuilder->whereHas('categories',
+                fn($q) => $q->where('category_id', $request->category_id));
         }
 
-        $albums = $queryBuilder->paginate($albumsPerPage);
+        $albums = $queryBuilder->paginate(env('IMAGE_PER_PAGE', 20));
+
         return view('albums.albums', ['albums' => $albums]);
     }
 
     /**
      * Show the form for creating a new resource.
      *
+     * @return Response
      */
-    public function create(): View
+    public function create()
     {
         $album = new Album();
-
+        $selectedCategories = [];
         $categories = Category::orderBy('category_name')->get();
-
-        return view('albums.createalbum',
-            [
-                'album' => $album,
-                'categories' => $categories,
-                'selectedCategories' => []
-            ]);
+        return view('albums.createalbum', [
+            'album' => $album,
+            'categories' => $categories,
+            'selectedCategories' => []
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param AlbumRequest $request
-     *
-     * @return RedirectResponse
+     * @param Request $request
+     * @return Response
      */
-    public function store(AlbumRequest $request): RedirectResponse
+    public function store(AlbumRequest $request)
     {
         $album = new Album();
-        $album->album_name = $request->input('album_name');
-        $album->description = $request->input('description');
-        $album->user_id = Auth::id();
+        $album->album_name = request()->input('album_name');
         $album->album_thumb = '/';
+        $album->description = request()->input('description');
+        $album->user_id = Auth::id();
         $res = $album->save();
         if ($res) {
-            event(new NewAlbumCreated($album));
             if ($request->has('categories')) {
                 $album->categories()->attach($request->input('categories'));
             }
-            $this->processFile($request, $album);
-            $album->save();
+            if ($this->processFile($album->id, $request, $album)) {
+                $album->save();
+            }
+            event(new NewAlbumCreated($album));
         }
 
-        //$res =  Album::create($data);
-        $messaggio = $res ? 'Album   ' . $album->album_name . ' Created' : 'Album ' . $album->album_name . ' was not crerated';
-        session()->flash('message', $messaggio);
+        $name = request()->input('name');
+        $messaggio = $res ? 'Album   ' . $name . ' Created' : 'Album ' . $name . ' was not crerated';
         return redirect()->route('albums.index');
     }
 
     /**
-     * @param Request $request
-     * @param Album $album
-     *
-     * @return void
+     * @param Request $req
+     * @param $id
+     * @param $album
      */
-    public function processFile(Request $request, Album $album): void
+    private function processFile($id, Request $req, $album): bool
     {
-        $file = $request->file('album_thumb');
+        if (!$req->hasFile('album_thumb')) {
+            return false;
+        }
 
-        $filename = $album->id . '.' . $file->extension();
-        $thumbnail = $file->storeAs(config('filesystems.album_thumbnail_dir'),
-            $filename,
-            ['disk' => 'public']);
-        $album->album_thumb = $thumbnail;
+        $file = $req->file('album_thumb');
+        if (!$file->isValid()) {
+            return false;
+        }
+
+
+        $filename = $id . '.' . $file->extension();
+        $filename = $file->storeAs(env('IMG_DIR'), $filename);
+        $album->album_thumb = $filename;
+        return true;
     }
 
     /**
      * Display the specified resource.
      *
      * @param Album $album
-     *
-     * @return Album $album
+     * @return Response
      */
-    public function show(Album $album): Album
+    public function show(Album $album)
     {
-        if (Auth::id() === $album->user_id) {
-            return $album;
-        }
-        abort(404);
+        return $album;
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param Album $album
-     *
      * @return Response
      */
-    public function edit(Album $album): View
+    public function edit(Album $album)
     {
         $categories = Category::orderBy('category_name')->get();
         $selectedCategories = $album->categories->pluck('id')->toArray();
@@ -149,26 +149,22 @@ if ($request->has('category_id')) {
     /**
      * Update the specified resource in storage.
      *
-     * @param AlbumRequest $request
+     * @param Request $request
      * @param Album $album
-     *
-     * @return RedirectResponse
+     * @return Response
      */
-    public function update(
-        AlbumRequest $request,
-        Album $album
-    ): RedirectResponse {
-        $data = $request->only(['album_name', 'description']);
-        $album->album_name = $data['album_name'];
-        $album->description = $data['description'];
-        if ($request->hasFile('album_thumb')) {
-            $this->processFile($request, $album);
-        }
+    public function update(AlbumRequest $req, Album $album)
+    {
+        $album->album_name = $req->input('album_name');
+        $album->description = $req->input('description');
+        $album->user_id = Auth::id();
+        $this->processFile($album->id, $req, $album);
+
         $res = $album->save();
-        if ($request->has('categories')) {
-            $album->categories()->sync($request->input('categories'));
+        if ($req->has('categories')) {
+            $album->categories()->sync($req->input('categories'));
         }
-        $messaggio = $res ? 'Album   ' . $album->album_name . ' Updated' : 'Album ' . $album->album_name . ' was not updated';
+        $messaggio = $res ? 'Album con nome = ' . $album->album_name . ' Aggiornato' : 'Album ' . $album->album_name . ' Non aggiornato';
         session()->flash('message', $messaggio);
         return redirect()->route('albums.index');
     }
@@ -177,26 +173,32 @@ if ($request->has('category_id')) {
      * Remove the specified resource from storage.
      *
      * @param Album $album
-     *
-     * @return int
+     * @return Response
      */
-    public function destroy(Album $album): int
+
+
+    public function destroy(Album $album, Request $req)
     {
-        $thumbnail = $album->album_thumb;
+        $thumbNail = $album->album_thumb;
         $res = $album->delete();
-        if ($res && $thumbnail && Storage::exists($thumbnail)) {
-            Storage::delete($thumbnail);
+        if ($res && $thumbNail && Storage::exists($thumbNail)) {
+            // no need to as there is ondelete cascade
+            // $album->categories()->detach($album->categories->pluck('id'));
+            Storage::delete($thumbNail);
         }
-        if (request()->ajax()) {
+
+        if ($req->ajax()) {
             return $res;
         }
-        return redirect()->back();
+        session()->flash('message',
+            'Album ' . $album->album_name . ' deleted!');
+        return redirect()->route('albums.index');
     }
 
     public function getImages(Album $album)
     {
-        $imgPerPage = config('filesystems.img_per_page');
-        $images = Photo::wherealbumId($album->id)->latest()->paginate($imgPerPage);
+        $images = Photo::wherealbumId($album->id)->latest()->paginate(env('IMAGE_PER_PAGE',
+            20));
         return view('images.albumimages', compact('album', 'images'));
     }
 }
