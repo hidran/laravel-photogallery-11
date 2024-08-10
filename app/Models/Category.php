@@ -35,9 +35,9 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Category whereUserId($value)
  * @property-read User $user
  * @method static Builder|Category getCategoriesByUserId(User $user)
- * @mixin Eloquent
  * @property-read \App\Models\User $user
  * @method static Builder|Category getCategoriesByUserId(\App\Models\User $user)
+ * @mixin Eloquent
  */
 class Category extends Model
 {

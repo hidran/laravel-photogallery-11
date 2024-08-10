@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\VerifyIsAdmin;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -8,7 +9,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: [
             __DIR__ . '/../routes/web.php',
-            // __DIR__ . '/../routes/admin.php'
+            __DIR__ . '/../routes/admin.php'
         ],
 
         api: __DIR__ . '/../routes/api.php',
@@ -17,7 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //  $middleware->removeFromGroup('web', ValidateCsrfToken::class);
+        //   $middleware->web(append: [VerifyIsAdmin::class]);
+        //$middleware->appendToGroup('web', VerifyIsAdmin::class);
+        $middleware->alias(['is_admin' => VerifyIsAdmin::class]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

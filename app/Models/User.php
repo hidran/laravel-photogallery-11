@@ -36,6 +36,23 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static Builder|User wherePassword($value)
  * @method static Builder|User whereRememberToken($value)
  * @method static Builder|User whereUpdatedAt($value)
+ * @property Carbon|null $deleted_at
+ * @property string $user_role
+ * @property-read Collection<int, \App\Models\Category> $categories
+ * @property-read int|null $categories_count
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @property-read Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read int|null $tokens_count
+ * @method static Builder|User newModelQuery()
+ * @method static Builder|User newQuery()
+ * @method static Builder|User onlyTrashed()
+ * @method static Builder|User query()
+ * @method static Builder|User whereDeletedAt($value)
+ * @method static Builder|User whereUserRole($value)
+ * @method static Builder|User withTrashed()
+ * @method static Builder|User withoutTrashed()
+ * @mixin \Eloquent
  */
 class User extends Authenticatable
 {
@@ -51,6 +68,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'user_role'
     ];
 
     /**
@@ -71,6 +89,11 @@ class User extends Authenticatable
     public function categories(): HasMany
     {
         return $this->hasMany(Category::class)->withCount('albums')->orderBy('category_name');
+    }
+
+    public function isAdmin(): bool
+    {
+        return 'admin' === $this->user_role;
     }
 
     /**
