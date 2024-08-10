@@ -3,7 +3,7 @@
 use App\Events\NewAlbumCreated;
 use App\Mail\TestEmail;
 use App\Mail\TestMd;
-use App\Models\User;
+use App\Models\Album;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -45,11 +45,11 @@ require __DIR__ . '/auth.php';
 
 // mail
 Route::get('testMail', function () {
-    Mail::to('hidran@gmail.com')->send(new TestEmail());
+    Mail::to('hidran@gmail.com')->send(new TestEmail(null));
 });
 //
 // event
-Route::get('testEvent',function (){
-    $album =Album::first();
-      event(new NewAlbumCreated($album));
+Route::get('testEvent', function () {
+    $album = Album::first();
+    event(new NewAlbumCreated($album));
 });
