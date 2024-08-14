@@ -3,17 +3,19 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PhotoResource;
 use App\Models\Photo;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class PhotoController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): ResourceCollection
     {
-        //
+        return PhotoResource::collection(Photo::paginate());
     }
 
     /**
@@ -27,9 +29,9 @@ class PhotoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Photo $photo)
+    public function show(Photo $photo): PhotoResource
     {
-        //
+        return new PhotoResource($photo);
     }
 
     /**
