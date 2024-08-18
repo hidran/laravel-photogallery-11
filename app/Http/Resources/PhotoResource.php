@@ -40,7 +40,7 @@ class PhotoResource extends JsonResource
                 'img_path' => $this->img_path,
             ],
             'links' => [
-                'self' => route('categories.show', $this->id),
+                'self' => route('photos.show', $this->id),
             ]
         ];
     }
