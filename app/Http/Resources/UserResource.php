@@ -17,6 +17,8 @@ use Illuminate\Support\Carbon;
  */
 class UserResource extends JsonResource
 {
+    public const string TYPE = 'users';
+
     /**
      * Transform the resource into an array.
      *
@@ -25,13 +27,20 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'email' => $this->email,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'deleted_at' => $this->deleted_at,
-            'user_role' => $this->user_role
+            'id' => (string)$this->id,
+            'type' => static::TYPE,
+            'attributes' => [
+                'id' => $this->id,
+                'name' => $this->name,
+                'email' => $this->email,
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
+                'deleted_at' => $this->deleted_at,
+                'user_role' => $this->user_role
+            ],
+            'links' => [
+                'self' => route('users.show', $this->id)
+            ]
 
         ];
     }
